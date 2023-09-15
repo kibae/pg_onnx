@@ -7,8 +7,7 @@
 - [ONNX: Open Neural Network Exchange](https://onnx.ai/)
 - **ONNX Runtime integrated with PostgreSQL. Perform ML inference with data in your database.**
 - PostgreSQL creates a process every new client connects. If every process ran ONNX inference, the system and GPU would
-  run out of memory.
-- So pg_onnx runs **[onnxruntime-server](https://github.com/kibae/onnxruntime-server)** as a background worker and
+  run out of memory. So, pg_onnx runs **[onnxruntime-server](https://github.com/kibae/onnxruntime-server)** as a background worker and
   creates and recycles one onnx runtime session per ONNX
   file.
 
