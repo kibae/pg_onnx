@@ -49,6 +49,7 @@ jobs:
         if: steps.cache-dependencies-apt.outputs.cache-hit != 'true' && (startsWith(matrix.image, 'debian:') || startsWith(matrix.image, 'ubuntu:'))
         run: |
           sudo apt-get update -qq
+          sudo apt-mark unhold postgresql-common
           sudo apt-get install -yqf --download-only build-essential clang-11 cmake libboost-all-dev libpq-dev postgresql-server-dev-all libgtest-dev
           cp /var/cache/apt/archives/*.deb .github/cache/dependencies-apt/
 
@@ -97,7 +98,7 @@ jobs:
         # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         run: |
           cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 4
-          cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
+          sudo cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
