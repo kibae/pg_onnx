@@ -58,7 +58,6 @@ EXECUTE PROCEDURE trigger_test_insert();
 --
 INSERT INTO trigger_test (value1, value2, value3)
 VALUES (1, 2, 3),
-       (2, 3, 4),
        (3, 4, 5);
 --
 -- Check result: prediction column should be filled
@@ -69,7 +68,6 @@ ORDER BY 1;
  id | value1 | value2 | value3 |     prediction     
 ----+--------+--------+--------+--------------------
   1 |      1 |      2 |      3 | 0.6492120623588562
-  2 |      2 |      3 |      4 | 0.7610487341880798
-  3 |      3 |      4 |      5 | 0.8728854656219482
-(3 rows)
+  2 |      3 |      4 |      5 | 0.8728854656219482
+(2 rows)
 

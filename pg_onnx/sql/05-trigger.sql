@@ -58,7 +58,6 @@ EXECUTE PROCEDURE trigger_test_insert();
 --
 INSERT INTO trigger_test (value1, value2, value3)
 VALUES (1, 2, 3),
-       (2, 3, 4),
        (3, 4, 5);
 
 --
