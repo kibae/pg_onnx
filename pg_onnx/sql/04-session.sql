@@ -5,8 +5,8 @@ FROM pg_onnx_list_session();
 -- execute session without create
 SELECT pg_onnx_execute_session('sample_model', '1', '{
   "x": [[1], [2], [3]],
-  "y": [[2], [3], [4]],
-  "z": [[3], [4], [5]]
+  "y": [[3], [4], [5]],
+  "z": [[5], [6], [7]]
 }');
 
 -- create session
@@ -20,8 +20,8 @@ FROM pg_onnx_list_session();
 -- execute session
 SELECT pg_onnx_execute_session('sample_model', '1', '{
   "x": [[1], [2], [3]],
-  "y": [[2], [3], [4]],
-  "z": [[3], [4], [5]]
+  "y": [[3], [4], [5]],
+  "z": [[5], [6], [7]]
 }');
 
 -- list session: check execution_count

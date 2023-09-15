@@ -38,7 +38,7 @@ jobs:
         id: cache-test-fixtures
         uses: actions/cache@v3
         with:
-          path: test/fixture
+          path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
 
       - name: Download assets(models)
@@ -68,10 +68,18 @@ jobs:
         # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         run: |
           cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 4
-          cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
+          sudo cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest --extra-verbose --build-config ${{ matrix.build_type }}
+
+      - name: Upload artifact
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: output-artifact
+          path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.*
+          if-no-files-found: ignore

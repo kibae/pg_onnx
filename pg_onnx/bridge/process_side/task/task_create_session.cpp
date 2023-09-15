@@ -21,16 +21,15 @@ model_info_t &get_model(const std::string &model_name, const std::string &model_
 		throw std::runtime_error("SPI_connect failed: error code " + std::to_string(ret));
 	}
 
-	SPIPlanPtr plan = SPI_prepare(sql.c_str(), 2, (Oid[]){TEXTOID, TEXTOID});
+	Oid argtypes[] = {TEXTOID, TEXTOID};
+	SPIPlanPtr plan = SPI_prepare(sql.c_str(), 2, argtypes);
 	if (plan == nullptr) {
 		SPI_finish();
 		throw std::runtime_error("SPI_prepare failed");
 	}
 
-	ret = SPI_execute_plan(
-		plan, (Datum[]){CStringGetTextDatum(model_name.c_str()), CStringGetTextDatum(model_version.c_str())}, nullptr,
-		true, 0
-	);
+	Datum values[] = {CStringGetTextDatum(model_name.c_str()), CStringGetTextDatum(model_version.c_str())};
+	ret = SPI_execute_plan(plan, values, nullptr, true, 0);
 	if (ret != SPI_OK_SELECT) {
 		SPI_finish();
 		throw std::runtime_error("SPI_execute failed: error code " + std::to_string(ret));
