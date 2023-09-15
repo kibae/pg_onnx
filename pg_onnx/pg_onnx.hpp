@@ -23,7 +23,6 @@ extern "C" {
 #include <libpq/pqformat.h>
 #include <miscadmin.h>
 #include <postmaster/bgworker.h>
-#include <server/pgstat.h>
 #include <storage/ipc.h>
 #include <storage/latch.h>
 #include <storage/proc.h>
