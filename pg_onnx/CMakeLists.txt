@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.0)
 project(pg_onnx)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
         pg_onnx.cpp

@@ -1,6 +1,6 @@
 project(pg_onnx_bgworker_side)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
         bgworker.cpp

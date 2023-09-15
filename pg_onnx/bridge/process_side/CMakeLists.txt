@@ -1,6 +1,6 @@
 project(pg_onnx_process_side)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 14)
 
 set(SOURCE_FILES
         api_client.cpp
