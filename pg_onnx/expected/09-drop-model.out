@@ -1,0 +1,18 @@
+SELECT pg_onnx_drop_model('sample_model', '0');
+ pg_onnx_drop_model 
+--------------------
+ t
+(1 row)
+
+SELECT pg_onnx_drop_model('sample_model', '1');
+ pg_onnx_drop_model 
+--------------------
+ t
+(1 row)
+
+SELECT pg_onnx_drop_model('sample_model', '2');
+ pg_onnx_drop_model 
+--------------------
+ t
+(1 row)
+
