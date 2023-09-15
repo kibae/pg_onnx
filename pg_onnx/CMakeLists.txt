@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22.0)
 project(pg_onnx)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 
 set(SOURCE_FILES
         pg_onnx.cpp
@@ -37,7 +37,7 @@ add_postgresql_extension(
         09-drop-model
 )
 
-
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register)
 target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime_server_static)
 
 enable_testing()
