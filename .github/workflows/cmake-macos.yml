@@ -38,7 +38,7 @@ jobs:
         id: cache-test-fixtures
         uses: actions/cache@v3
         with:
-          path: test/fixture
+          path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
 
       - name: Download assets(models)
