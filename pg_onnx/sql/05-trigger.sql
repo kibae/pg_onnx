@@ -1,13 +1,13 @@
 --
 -- Create a model
 --
-SELECT pg_onnx_create_model(
-               'sample_model',
-               'v20230101',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
-               '{}',
-               'sample model for trigger test'
-           );
+SELECT pg_onnx_import_model(
+        'sample_model',
+        'v20230101',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+        '{}',
+        'sample model for trigger test'
+    );
 
 --
 -- Create a table
@@ -30,7 +30,7 @@ $$
 DECLARE
     result jsonb;
 BEGIN
-    result := pg_onnx_execute_session(
+    result := pg_onnx_execute(
             'sample_model', 'v20230101',
             JSONB_BUILD_OBJECT('x', ARRAY [[NEW.value1]], 'y', ARRAY [[NEW.value2]], 'z',
                                ARRAY [[NEW.value3]]));
@@ -58,7 +58,7 @@ EXECUTE PROCEDURE trigger_test_insert();
 --
 INSERT INTO trigger_test (value1, value2, value3)
 VALUES (1, 2, 3),
-       (3, 4, 5);
+    (3, 4, 5);
 
 --
 -- Check result: prediction column should be filled

@@ -4,29 +4,29 @@ FROM pg_onnx_inspect_model_bin(
     );
 
 
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '1',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '1',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
 
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '1',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '1',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
 
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '2',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/2/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '2',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/2/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
 
 SELECT name, version, option, inputs, outputs, description
 FROM ext_pg_onnx.model

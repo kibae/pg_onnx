@@ -7,43 +7,43 @@ FROM pg_onnx_inspect_model_bin(
  {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"}
 (1 row)
 
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '1',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
- pg_onnx_create_model 
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '1',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
+ pg_onnx_import_model 
 ----------------------
  t
 (1 row)
 
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '1',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '1',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
 ERROR:  duplicate key value violates unique constraint "model_bin_pkey"
 DETAIL:  Key (name, version)=(sample_model, 1) already exists.
 CONTEXT:  SQL statement "WITH res
-             AS (
+        AS (
             INSERT INTO ext_pg_onnx.model_bin (name, version, model)
                 VALUES ($1, $2, $3)
                 RETURNING model_bin.name, model_bin.version)
     SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
                     FROM res"
-PL/pgSQL function pg_onnx_create_model(text,text,bytea,jsonb,text) line 6 at SQL statement
-SELECT pg_onnx_create_model(
-               'sample_model',
-               '2',
-               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/2/model.onnx')::bytea,
-               '{}',
-               'sample model'
-           );
- pg_onnx_create_model 
+PL/pgSQL function pg_onnx_import_model(text,text,bytea,jsonb,text) line 6 at SQL statement
+SELECT pg_onnx_import_model(
+        'sample_model',
+        '2',
+        PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/2/model.onnx')::bytea,
+        '{}',
+        'sample model'
+    );
+ pg_onnx_import_model 
 ----------------------
  t
 (1 row)

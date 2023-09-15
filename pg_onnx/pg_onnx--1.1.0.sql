@@ -74,7 +74,7 @@ SELECT *
 FROM ext_pg_onnx.model
 $$ LANGUAGE SQL;
 
-CREATE OR REPLACE FUNCTION pg_onnx_create_model(
+CREATE OR REPLACE FUNCTION pg_onnx_import_model(
     name TEXT,
     version TEXT,
     model BYTEA,
@@ -87,7 +87,7 @@ DECLARE
     inspect pg_onnx_inspect;
 BEGIN
     WITH res
-             AS (
+        AS (
             INSERT INTO ext_pg_onnx.model_bin (name, version, model)
                 VALUES ($1, $2, $3)
                 RETURNING model_bin.name, model_bin.version)
@@ -115,7 +115,7 @@ DECLARE
     result BOOLEAN;
 BEGIN
     WITH res
-             AS (
+        AS (
             DELETE FROM ext_pg_onnx.model
                 WHERE model.name = $1 AND model.version = $2
                 RETURNING model.name, model.version)
@@ -165,7 +165,7 @@ AS
     LANGUAGE C
     STRICT;
 
-CREATE FUNCTION pg_onnx_execute_session(name TEXT, version TEXT, inputs jsonb)
+CREATE FUNCTION pg_onnx_execute(name TEXT, version TEXT, inputs jsonb)
     RETURNS jsonb
 AS
 'MODULE_PATHNAME',
