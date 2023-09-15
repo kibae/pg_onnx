@@ -14,8 +14,8 @@ json api_request(
 	auto json = request_json.dump();
 	struct onnxruntime_server::transport::tcp::protocol_header header = {0, 0, 0, 0};
 	header.type = htons(type);
-	header.json_length = htonll(json.size());
-	header.post_length = htonll(post_length);
+	header.json_length = HTONLL(json.size());
+	header.post_length = HTONLL(post_length);
 	header.length = header.json_length + header.post_length;
 
 	boost::asio::io_context io_context;
@@ -50,7 +50,7 @@ json api_request(
 		if (res_data.size() > sizeof(struct Orts::transport::tcp::protocol_header)) {
 			res_header = *(struct Orts::transport::tcp::protocol_header *)res_data.data();
 			res_header.type = ntohs(res_header.type);
-			res_header.length = ntohll(res_header.length);
+			res_header.length = NTOHLL(res_header.length);
 
 			if (res_data.length() >= res_header.length)
 				break;
