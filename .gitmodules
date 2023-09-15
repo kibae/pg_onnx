@@ -1,0 +1,3 @@
+[submodule "onnxruntime-server"]
+	path = onnxruntime-server
+	url = https://github.com/kibae/onnxruntime-server.git
