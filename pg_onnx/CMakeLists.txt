@@ -25,7 +25,12 @@ add_postgresql_extension(
         ${SOURCE_FILES}
 
         SCRIPTS pg_onnx--1.0.sql
-        REGRESS 01-create-model 04-session 09-drop-model)
+        REGRESS
+        01-create-model
+        04-session
+        05-trigger
+        09-drop-model
+)
 
 
 target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime_server_static pg_onnx_bgworker_side pg_onnx_process_side)

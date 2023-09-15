@@ -1,0 +1,70 @@
+--
+-- Create a model
+--
+SELECT pg_onnx_create_model(
+               'sample_model',
+               'v20230101',
+               PG_READ_BINARY_FILE('../../../onnxruntime-server/test/fixture/sample/1/model.onnx')::bytea,
+               '{}',
+               'sample model for trigger test'
+           );
+
+--
+-- Create a table
+--
+CREATE TABLE trigger_test
+(
+    id         SERIAL PRIMARY KEY,
+    value1     INT,
+    value2     INT,
+    value3     INT,
+    prediction FLOAT
+);
+
+--
+-- Create a trigger function
+--
+CREATE OR REPLACE FUNCTION trigger_test_insert()
+    RETURNS TRIGGER AS
+$$
+DECLARE
+    result jsonb;
+BEGIN
+    result := pg_onnx_execute_session(
+            'sample_model', 'v20230101',
+            JSONB_BUILD_OBJECT('x', ARRAY [[NEW.value1]], 'y', ARRAY [[NEW.value2]], 'z',
+                               ARRAY [[NEW.value3]]));
+
+    -- output shape: float[-1,1]
+    -- eg: {"output": [[0.6492120623588562]]}
+    NEW.prediction := result -> 'output' -> 0 -> 0;
+    RETURN NEW;
+END;
+$$
+    LANGUAGE plpgsql;
+
+--
+-- Create a trigger
+--
+CREATE TRIGGER trigger_test_insert
+    BEFORE INSERT
+    ON trigger_test
+    FOR EACH ROW
+EXECUTE PROCEDURE trigger_test_insert();
+
+
+--
+-- Insert data
+--
+INSERT INTO trigger_test (value1, value2, value3)
+VALUES (1, 2, 3),
+       (2, 3, 4),
+       (3, 4, 5);
+
+--
+-- Check result: prediction column should be filled
+--
+SELECT *
+FROM trigger_test
+ORDER BY 1;
+
