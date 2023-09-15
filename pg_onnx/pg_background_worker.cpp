@@ -22,7 +22,7 @@ void init_config(extension_state_t *state) {
 	if (strlen(state->config_onnxruntime_server_hostname) <= 0) {
 		// local worker
 		DefineCustomIntVariable(
-			"pg_onnx.max_workers", "number of threads onnxruntime will run in",
+			"pg_onnx.num_threads", "number of threads onnxruntime will run in",
 			"Sets the number of threads onnxruntime will run in.", &state->config_num_threads, 4, 1, 100, PGC_SUSET, 0,
 			NULL, NULL, NULL
 		);
