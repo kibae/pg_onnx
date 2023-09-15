@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
 
 - [ONNX: Open Neural Network Exchange](https://onnx.ai/)
-- **ONNX Runtime integrated with PostgreSQL. Allows ML inference with information in the database.**
+- **ONNX Runtime integrated with PostgreSQL. Perform ML inference with data in your database.**
 - PostgreSQL creates a process every new client connects. If every process ran ONNX inference, the system and GPU would
   run out of memory.
 - So pg_onnx runs **[onnxruntime-server](https://github.com/kibae/onnxruntime-server)** as a background worker and
