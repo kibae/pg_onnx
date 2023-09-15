@@ -69,23 +69,27 @@ model_info_t &get_model(const std::string &model_name, const std::string &model_
 	return model_info;
 }
 
+json create_session(extension_state_t *state, const std::string &name, const std::string &version) {
+	auto model = get_model(name, version);
+
+	auto request = json::object();
+	request["model"] = name;
+	request["version"] = version;
+	request["option"] = model.option;
+
+	auto result =
+		api_request(state, Orts::task::type::CREATE_SESSION, request, (const char *)model.bin.data(), model.bin.size());
+	if (result.is_object() && result.contains("error"))
+		throw std::runtime_error(result["error"].get<std::string>());
+	return result;
+}
+
 Datum task_create_session(
 	extension_state_t *state, PG_FUNCTION_ARGS, const std::string &name, const std::string &version
 ) {
 	PG_SRF_BEGIN() {
 		// process
-		auto model = get_model(name, version);
-
-		auto request = json::object();
-		request["model"] = name;
-		request["version"] = version;
-		request["option"] = model.option;
-
-		auto result = api_request(
-			state, Orts::task::type::CREATE_SESSION, request, (const char *)model.bin.data(), model.bin.size()
-		);
-		if (result.is_object() && result.contains("error"))
-			throw std::runtime_error(result["error"].get<std::string>());
+		auto result = create_session(state, name, version);
 
 		funcctx->user_fctx = (void *)new json_list_iterator(json::array({result}));
 	}

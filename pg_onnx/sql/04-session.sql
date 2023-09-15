@@ -2,6 +2,13 @@
 SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
 
+-- execute session without create
+SELECT pg_onnx_execute_session('sample_model', '1', '{
+  "x": [[1], [2], [3]],
+  "y": [[2], [3], [4]],
+  "z": [[3], [4], [5]]
+}');
+
 -- create session
 SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_create_session('sample_model', '1');

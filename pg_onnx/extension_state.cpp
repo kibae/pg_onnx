@@ -5,10 +5,10 @@
 #include "pg_onnx.hpp"
 
 // cache per process
-extension_state_t *state = NULL;
+extension_state_t *state = nullptr;
 
 extension_state_t *extension_state() {
-	if (state != NULL) {
+	if (state != nullptr) {
 		return state;
 	}
 	bool found = false;

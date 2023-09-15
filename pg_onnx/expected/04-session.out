@@ -5,20 +5,27 @@ FROM pg_onnx_list_session();
 -------+---------+-----------------+--------+---------+--------
 (0 rows)
 
+-- execute session without create
+SELECT pg_onnx_execute_session('sample_model', '1', '{
+  "x": [[1], [2], [3]],
+  "y": [[2], [3], [4]],
+  "z": [[3], [4], [5]]
+}');
+                            pg_onnx_execute_session                             
+--------------------------------------------------------------------------------
+ {"output": [[0.6492120623588562], [0.7610487341880798], [0.8728854656219482]]}
+(1 row)
+
 -- create session
 SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_create_session('sample_model', '1');
-    model     | version | execution_count |                               inputs                               |           outputs           |     option      
---------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------
- sample_model | 1       |               0 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
-(1 row)
-
+ERROR:  pg_onnx_internal_create_session: session already exists
 -- list session: 1 item
 SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
     model     | version | execution_count |                               inputs                               |           outputs           |     option      
 --------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------
- sample_model | 1       |               0 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
+ sample_model | 1       |               1 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
 (1 row)
 
 -- execute session
@@ -37,7 +44,7 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
     model     | version | execution_count |                               inputs                               |           outputs           |     option      
 --------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------
- sample_model | 1       |               1 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
+ sample_model | 1       |               2 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
 (1 row)
 
 -- create session
@@ -52,7 +59,7 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
     model     | version | execution_count |                               inputs                               |           outputs           |     option      
 --------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------
- sample_model | 1       |               1 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
+ sample_model | 1       |               2 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
  sample_model | 2       |               0 | {"input_ids": "int64[-1,512]", "onnx::Equal_1": "int64[-1,512]"}   | {"output": "int64[-1]"}     | {"cuda": false}
 (2 rows)
 
