@@ -31,7 +31,7 @@ class json_list_iterator {
 		funcctx = SRF_FIRSTCALL_INIT();                                                                                \
 		oldcontext = MemoryContextSwitchTo(funcctx->multi_call_memory_ctx);                                            \
                                                                                                                        \
-		if (get_call_result_type(fcinfo, NULL, &tupdesc) != TYPEFUNC_COMPOSITE)                                        \
+		if (get_call_result_type(fcinfo, nullptr, &tupdesc) != TYPEFUNC_COMPOSITE)                                     \
 			ereport(                                                                                                   \
 				ERROR, (errcode(ERRCODE_FEATURE_NOT_SUPPORTED),                                                        \
 						errmsg("function returning record called in context that cannot accept type record"))          \

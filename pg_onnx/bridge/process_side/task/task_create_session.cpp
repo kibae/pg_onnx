@@ -13,7 +13,8 @@ typedef struct model_info_t {
 } model_info_t;
 
 model_info_t &get_model(const std::string &model_name, const std::string &model_version) {
-	std::string sql("SELECT model, option FROM ext_pg_onnx.model WHERE name=$1 AND version=$2");
+	std::string sql("SELECT model_bin.model, model.option FROM ext_pg_onnx.model JOIN ext_pg_onnx.model_bin "
+					"USING(name, version) WHERE model.name=$1 AND model.version=$2");
 
 	int ret = SPI_connect();
 	if (ret != SPI_OK_CONNECT) {
