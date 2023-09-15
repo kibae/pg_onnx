@@ -1,14 +1,15 @@
 # See: https://github.com/actions/starter-workflows/blob/main/ci/cmake-single-platform.yml
 name: CMake on MacOS
 
-#on:
-#  push:
-#    branches: [ "*" ]
-#  pull_request:
-#    branches: [ "*" ]
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
   build:
+    if: ${{ false }}
     runs-on: ${{ matrix.os }}
 
     strategy:
