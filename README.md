@@ -33,7 +33,7 @@ graph LR
         PS3 <-- " import model " --> TABLE
         PS1 & PS2 & PS3 <-- " ONNX operation " --> ONNX
     end
-    C[Client using pg_onnx] ==> PS3
+    C[Client trying to use pg_onnx] ==> PS3
 ```
 
 ----
