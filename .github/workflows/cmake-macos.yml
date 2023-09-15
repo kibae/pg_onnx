@@ -77,7 +77,9 @@ jobs:
         run: ctest --extra-verbose --build-config ${{ matrix.build_type }}
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v2
+        if: failure()
+        uses: actions/upload-artifact@v3
         with:
           name: output-artifact
-          path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.diffs
+          path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.*
+          if-no-files-found: ignore
