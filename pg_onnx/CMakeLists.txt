@@ -37,7 +37,7 @@ add_postgresql_extension(
         09-drop-model
 )
 
-target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register)
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register -Wno-register)
 target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime_server_static)
 
 enable_testing()
