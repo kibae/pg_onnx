@@ -24,7 +24,7 @@ add_postgresql_extension(
 
         ${SOURCE_FILES}
 
-        SCRIPTS pg_onnx--1.0.sql
+        SCRIPTS pg_onnx--1.1.0.sql
         REGRESS
         01-create-model
         04-session
