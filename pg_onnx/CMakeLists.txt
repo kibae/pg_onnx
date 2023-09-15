@@ -19,7 +19,7 @@ add_subdirectory(bridge/process_side)
 
 add_postgresql_extension(
         ${PROJECT_NAME}
-        VERSION 1.0
+        VERSION 1.1.0
         SOURCES
 
         ${SOURCE_FILES}
