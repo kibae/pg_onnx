@@ -115,7 +115,7 @@ SELECT pg_onnx_execute_session('cuda_model', 'test', '{
   ]
 }
 ');
- pg_onnx_execute_session
+ pg_onnx_execute_session  
 --------------------------
  {"output": [13, 14, 11]}
 (1 row)
