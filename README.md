@@ -7,9 +7,8 @@
 - [ONNX: Open Neural Network Exchange](https://onnx.ai/)
 - **ONNX Runtime integrated with PostgreSQL. Perform ML inference with data in your database.**
 - PostgreSQL creates a process every new client connects. If every process ran ONNX inference, the system and GPU would
-  run out of memory. pg_onnx runs **[onnxruntime-server](https://github.com/kibae/onnxruntime-server)** as a background worker and
-  creates and recycles one onnx runtime session per ONNX
-  file.
+  run out of memory. pg_onnx runs **[onnxruntime-server](https://github.com/kibae/onnxruntime-server)** as a background
+  worker and creates and recycles one onnx runtime session per ONNX file.
 
 ```mermaid
 graph LR
@@ -58,6 +57,7 @@ graph LR
         - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
         - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
         - [pg_onnx_execute(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_executetext-text-jsonb)
+        - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
 
 ----
 
@@ -173,6 +173,7 @@ SELECT pg_onnx_execute(
 
 - When data is added, use the BEFORE INSERT trigger to update some columns with ML inference results.
 - *Depending on your ML model, this can have a significant performance impact, so be careful when using it.*
+- [Example](https://github.com/kibae/pg_onnx/blob/main/pg_onnx/expected/05-trigger.out)
 
 ```sql
 -- Create a test table
@@ -229,3 +230,4 @@ EXECUTE PROCEDURE trigger_test_insert();
     - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
     - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
     - [pg_onnx_execute(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_executetext-text-jsonb)
+    - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
