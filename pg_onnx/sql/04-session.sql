@@ -3,7 +3,7 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
 
 -- execute session without create
-SELECT pg_onnx_execute('sample_model', '1', '{
+SELECT pg_onnx_execute_session('sample_model', '1', '{
   "x": [[1], [2], [3]],
   "y": [[3], [4], [5]],
   "z": [[5], [6], [7]]
@@ -18,7 +18,7 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
 
 -- execute session
-SELECT pg_onnx_execute('sample_model', '1', '{
+SELECT pg_onnx_execute_session('sample_model', '1', '{
   "x": [[1], [2], [3]],
   "y": [[3], [4], [5]],
   "z": [[5], [6], [7]]
@@ -40,7 +40,7 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
 
 -- execute session
-SELECT pg_onnx_execute('sample_model', '2', '{
+SELECT pg_onnx_execute_session('sample_model', '2', '{
   "input_ids": [
     [
       101, 11834, 21600, 2102, 9005, 12098, 8566, 5740, 6853, 1999, 1996, 2806, 1997, 15262, 19699, 14663, 1005, 1055,

@@ -56,7 +56,7 @@ graph LR
     - [ONNX Session Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-session-functions)
         - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
         - [pg_onnx_describe_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_describe_sessiontext-text)
-        - [pg_onnx_execute(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_executetext-text-jsonb)
+        - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_execute_sessiontext-text-jsonb)
         - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
         - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
 
@@ -150,7 +150,7 @@ SELECT pg_onnx_import_model(
         'sample model' ---------------- description
     );
 
-SELECT pg_onnx_execute(
+SELECT pg_onnx_execute_session(
         'sample_model', -- model name
         'v20230101', ----- model version
         '{
@@ -194,7 +194,7 @@ $$
 DECLARE
     result jsonb;
 BEGIN
-    result := pg_onnx_execute(
+    result := pg_onnx_execute_session(
             'sample_model', 'v20230101',
             JSONB_BUILD_OBJECT(
                     'x', ARRAY [[NEW.value1]],
@@ -230,6 +230,6 @@ EXECUTE PROCEDURE trigger_test_insert();
 - [ONNX Session Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-session-functions)
     - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
     - [pg_onnx_describe_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_describe_sessiontext-text)
-    - [pg_onnx_execute(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_executetext-text-jsonb)
+    - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_execute_sessiontext-text-jsonb)
     - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
     - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)

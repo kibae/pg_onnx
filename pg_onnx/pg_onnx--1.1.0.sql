@@ -181,7 +181,7 @@ AS
     LANGUAGE C
     STRICT;
 
-CREATE FUNCTION pg_onnx_execute(name TEXT, version TEXT, inputs jsonb)
+CREATE FUNCTION pg_onnx_execute_session(name TEXT, version TEXT, inputs jsonb)
     RETURNS jsonb
 AS
 'MODULE_PATHNAME',

@@ -7,7 +7,7 @@ SELECT pg_onnx_import_model(
     );
 
 -- execute session
-SELECT pg_onnx_execute('cuda_model', 'test', '{
+SELECT pg_onnx_execute_session('cuda_model', 'test', '{
   "input_ids": [
     [
       101, 11834, 21600, 2102, 9005, 12098, 8566, 5740, 6853, 1999, 1996, 2806, 1997, 15262, 19699, 14663, 1005, 1055,

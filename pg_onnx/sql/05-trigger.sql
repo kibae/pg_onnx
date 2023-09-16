@@ -30,7 +30,7 @@ $$
 DECLARE
     result jsonb;
 BEGIN
-    result := pg_onnx_execute(
+    result := pg_onnx_execute_session(
             'sample_model', 'v20230101',
             JSONB_BUILD_OBJECT('x', ARRAY [[NEW.value1]], 'y', ARRAY [[NEW.value2]], 'z',
                                ARRAY [[NEW.value3]]));

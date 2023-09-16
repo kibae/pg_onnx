@@ -8,7 +8,7 @@
 - [ONNX Session Functions](#onnx-session-functions)
     - [pg_onnx_create_session(TEXT, TEXT)](#pg_onnx_create_sessiontext-text)
     - [pg_onnx_describe_session(TEXT, TEXT)](#pg_onnx_describe_sessiontext-text)
-    - [pg_onnx_execute(TEXT, TEXT, JSONB)](#pg_onnx_executetext-text-jsonb)
+    - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](#pg_onnx_execute_sessiontext-text-jsonb)
     - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](#pg_onnx_destroy_sessiontext-text-jsonb)
     - [pg_onnx_list_session()](#pg_onnx_list_session)
 
@@ -181,7 +181,7 @@ FROM pg_onnx_describe_session('sample_model', 'v20230101')
 
 ----
 
-### pg_onnx_execute(TEXT, TEXT, JSONB)
+### pg_onnx_execute_session(TEXT, TEXT, JSONB)
 
 - Execute the ONNX session.
 - ${\color{red}Create an ONNX session if it doesn't exist.}$
@@ -193,7 +193,7 @@ FROM pg_onnx_describe_session('sample_model', 'v20230101')
     - `outputs(JSONB)`: Output data
 
 ```sql
-SELECT pg_onnx_execute('sample_model', 'v20230101', '{
+SELECT pg_onnx_execute_session('sample_model', 'v20230101', '{
   "x": [[1], [2], [3]],
   "y": [[3], [4], [5]],
   "z": [[5], [6], [7]]
