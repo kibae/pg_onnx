@@ -56,11 +56,13 @@ model_info_t &get_model(const std::string &model_name, const std::string &model_
 	memcpy(model_info.bin.data(), VARDATA(binary_data), VARSIZE_ANY_EXHDR(binary_data));
 
 	// option can be null.
-	auto option_datum = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &is_null);
+	auto option_val = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &is_null);
 	if (is_null) {
 		model_info.option = json::object();
 	} else {
-		auto option_data = text_to_cstring(DatumGetTextP(option_datum));
+		Jsonb *option_datum = DatumGetJsonbP(option_val);
+		auto option_data = JsonbToCString(nullptr, &option_datum->root, VARSIZE(option_datum));
+
 		model_info.option = strlen(option_data) > 1 ? json::parse(option_data) : json::object();
 		pfree(option_data);
 	}

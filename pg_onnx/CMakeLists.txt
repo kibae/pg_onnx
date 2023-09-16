@@ -15,8 +15,26 @@ set(SOURCE_FILES
         bridge/process_side/task/task_create_session.cpp
         bridge/process_side/task/task_execute_session.cpp
         bridge/process_side/task/task_destroy_session.cpp
-
 )
+
+set(REGRESS_FILES
+        01-create-model
+        04-session
+        05-trigger
+        09-drop-model
+)
+
+# CUDA
+find_package(CUDA)
+if (NOT CUDA_FOUND)
+    set(CUDA_SDK_ROOT_DIR "/usr/local/cuda")
+    find_package(CUDA)
+endif ()
+
+if (CUDA_FOUND)
+    set(REGRESS_FILES ${REGRESS_FILES} 08-cuda)
+endif ()
+
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 find_package(PostgreSQL REQUIRED)
@@ -31,11 +49,7 @@ add_postgresql_extension(
         ${SOURCE_FILES}
 
         SCRIPTS pg_onnx--1.1.0.sql
-        REGRESS
-        01-create-model
-        04-session
-        05-trigger
-        09-drop-model
+        REGRESS ${REGRESS_FILES}
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register -Wno-register)

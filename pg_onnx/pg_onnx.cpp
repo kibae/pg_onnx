@@ -115,7 +115,7 @@ Datum pg_onnx_internal_execute_session(PG_FUNCTION_ARGS) {
 	if (name.empty() || version.empty() || !JsonContainerIsObject(&inputs_jsonb->root))
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("invalid argument")));
 
-	auto inputs = JsonbToCString(NULL, &inputs_jsonb->root, VARSIZE(inputs_jsonb));
+	auto inputs = JsonbToCString(nullptr, &inputs_jsonb->root, VARSIZE(inputs_jsonb));
 
 	auto state = extension_state();
 	Assert(state != NULL);
