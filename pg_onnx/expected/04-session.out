@@ -56,6 +56,13 @@ FROM pg_onnx_create_session('sample_model', '2');
 (1 row)
 
 SELECT model, version, execution_count, inputs, outputs, option
+FROM pg_onnx_describe_session('sample_model', '2');
+    model     | version | execution_count |                              inputs                              |         outputs         |     option      
+--------------+---------+-----------------+------------------------------------------------------------------+-------------------------+-----------------
+ sample_model | 2       |               0 | {"input_ids": "int64[-1,512]", "onnx::Equal_1": "int64[-1,512]"} | {"output": "int64[-1]"} | {"cuda": false}
+(1 row)
+
+SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
     model     | version | execution_count |                               inputs                               |           outputs           |     option      
 --------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------

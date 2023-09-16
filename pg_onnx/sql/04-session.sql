@@ -34,6 +34,9 @@ SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_create_session('sample_model', '2');
 
 SELECT model, version, execution_count, inputs, outputs, option
+FROM pg_onnx_describe_session('sample_model', '2');
+
+SELECT model, version, execution_count, inputs, outputs, option
 FROM pg_onnx_list_session();
 
 -- execute session

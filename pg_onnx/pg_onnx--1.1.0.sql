@@ -165,8 +165,16 @@ AS
     LANGUAGE C
     STRICT;
 
+CREATE FUNCTION pg_onnx_describe_session(name TEXT, version TEXT)
+    RETURNS SETOF pg_onnx_session
+AS
+'MODULE_PATHNAME',
+'pg_onnx_internal_describe_session'
+    LANGUAGE C
+    STRICT;
+
 CREATE FUNCTION pg_onnx_destroy_session(name TEXT, version TEXT)
-    RETURNS boolean
+    RETURNS BOOLEAN
 AS
 'MODULE_PATHNAME',
 'pg_onnx_internal_destroy_session'
