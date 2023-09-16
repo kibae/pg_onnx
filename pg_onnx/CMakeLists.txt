@@ -14,6 +14,7 @@ set(SOURCE_FILES
         bridge/process_side/task/task_list_session.cpp
         bridge/process_side/task/task_create_session.cpp
         bridge/process_side/task/task_execute_session.cpp
+        bridge/process_side/task/task_destroy_session.cpp
 
 )
 

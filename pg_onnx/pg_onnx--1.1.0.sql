@@ -165,6 +165,14 @@ AS
     LANGUAGE C
     STRICT;
 
+CREATE FUNCTION pg_onnx_destroy_session(name TEXT, version TEXT)
+    RETURNS boolean
+AS
+'MODULE_PATHNAME',
+'pg_onnx_internal_destroy_session'
+    LANGUAGE C
+    STRICT;
+
 CREATE FUNCTION pg_onnx_execute(name TEXT, version TEXT, inputs jsonb)
     RETURNS jsonb
 AS

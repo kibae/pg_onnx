@@ -141,3 +141,10 @@ SELECT pg_onnx_execute('sample_model', '2', '{
   ]
 }
 ');
+
+-- destroy session
+SELECT pg_onnx_destroy_session('sample_model', '2');
+
+SELECT model, version, execution_count, inputs, outputs, option
+FROM pg_onnx_list_session();
+

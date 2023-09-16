@@ -7,6 +7,7 @@ PG_MODULE_MAGIC;
 PG_FUNCTION_INFO_V1(pg_onnx_inspect_model_bin);
 PG_FUNCTION_INFO_V1(pg_onnx_internal_list_session);
 PG_FUNCTION_INFO_V1(pg_onnx_internal_create_session);
+PG_FUNCTION_INFO_V1(pg_onnx_internal_destroy_session);
 PG_FUNCTION_INFO_V1(pg_onnx_internal_execute_session);
 
 Datum pg_onnx_inspect_model_bin(PG_FUNCTION_ARGS) {
@@ -76,6 +77,27 @@ Datum pg_onnx_internal_create_session(PG_FUNCTION_ARGS) {
 
 	try {
 		return task_create_session(state, fcinfo, name, version);
+	} catch (std::exception &e) {
+		elog(ERROR, "%s: %s", __FUNCTION__, e.what());
+	}
+}
+
+Datum pg_onnx_internal_destroy_session(PG_FUNCTION_ARGS) {
+	// check args count and is null
+	if (PG_NARGS() < 2 || PG_ARGISNULL(0) || PG_ARGISNULL(1))
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("invalid argument")));
+
+	// args: name TEXT, version TEXT
+	auto name = std::string(text_to_cstring(PG_GETARG_TEXT_P(0)));
+	auto version = std::string(text_to_cstring(PG_GETARG_TEXT_P(1)));
+	if (name.empty() || version.empty())
+		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("invalid argument")));
+
+	auto state = extension_state();
+	Assert(state != NULL);
+
+	try {
+		return task_destroy_session(state, fcinfo, name, version);
 	} catch (std::exception &e) {
 		elog(ERROR, "%s: %s", __FUNCTION__, e.what());
 	}

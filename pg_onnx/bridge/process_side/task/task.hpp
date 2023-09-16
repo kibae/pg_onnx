@@ -15,5 +15,6 @@ Datum task_create_session(
 Datum task_execute_session(
 	extension_state_t *state, PG_FUNCTION_ARGS, const std::string &name, const std::string &version, const json &inputs
 );
+Datum task_destroy_session(extension_state_t *state, PG_FUNCTION_ARGS, const std::string &name, const std::string &version);
 
 #endif // PG_ONNX_TASK_HPP

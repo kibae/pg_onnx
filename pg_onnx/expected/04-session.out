@@ -173,3 +173,17 @@ SELECT pg_onnx_execute('sample_model', '2', '{
  {"output": [13, 14, 11]}
 (1 row)
 
+-- destroy session
+SELECT pg_onnx_destroy_session('sample_model', '2');
+ pg_onnx_destroy_session 
+-------------------------
+ t
+(1 row)
+
+SELECT model, version, execution_count, inputs, outputs, option
+FROM pg_onnx_list_session();
+    model     | version | execution_count |                               inputs                               |           outputs           |     option      
+--------------+---------+-----------------+--------------------------------------------------------------------+-----------------------------+-----------------
+ sample_model | 1       |               2 | {"x": "float32[-1,1]", "y": "float32[-1,1]", "z": "float32[-1,1]"} | {"output": "float32[-1,1]"} | {"cuda": false}
+(1 row)
+
