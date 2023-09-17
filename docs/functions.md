@@ -124,6 +124,8 @@ FROM pg_onnx_inspect_model_bin(
 ### pg_onnx_create_session(TEXT, TEXT)
 
 - Create a new ONNX session.
+- If the model ONNX file is too huge, you might get an error. In this case, change the value of the temp_file_limit
+  setting in PostgreSQL to -1 (no limit).
 - Parameters
     - `name(TEXT)`: Model name
     - `version(TEXT)`: Model version
