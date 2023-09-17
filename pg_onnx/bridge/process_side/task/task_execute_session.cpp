@@ -27,8 +27,7 @@ Datum task_execute_session(
 	// std::cout << "inputs: " << inputs.dump(2) << std::endl;
 	// std::cout << "outputs: " << result.dump(2) << std::endl;
 
-	text *result_text = cstring_to_text(result.dump().c_str());
-	Datum jsonb_datum = DirectFunctionCall1(jsonb_in, CStringGetDatum(text_to_cstring(result_text)));
+	Datum jsonb_datum = DirectFunctionCall1(jsonb_in, CStringGetDatum(result.dump().c_str()));
 
 	PG_RETURN_JSONB_P(DatumGetJsonbP(jsonb_datum));
 }

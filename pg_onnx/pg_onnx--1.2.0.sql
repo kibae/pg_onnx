@@ -9,48 +9,9 @@ CREATE TABLE ext_pg_onnx.model
     outputs     JSONB                    NOT NULL DEFAULT '{}'::JSONB,
     description TEXT                     NULL,
     created_at  TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+    lo_oid      OID,
     PRIMARY KEY (name, version)
 );
-
-CREATE TABLE ext_pg_onnx.model_bin
-(
-    name    TEXT  NOT NULL,
-    version TEXT  NOT NULL,
-    model   BYTEA NOT NULL,
-    PRIMARY KEY (name, version)
-);
-
--- CREATE TABLE ext_pg_onnx.model_statistic
--- (
---     name       TEXT                     NOT NULL,
---     version    TEXT                     NOT NULL,
---
---     execute    BIGINT                   NOT NULL DEFAULT 0,
---     success    BIGINT                   NOT NULL DEFAULT 0,
---     fail       BIGINT                   NOT NULL DEFAULT 0,
---
---     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
---     PRIMARY KEY (name, version),
---     FOREIGN KEY (name, version) REFERENCES ext_pg_onnx.model (name, version) ON DELETE CASCADE
--- );
-
--- When a record is inserted into pg_onnx.model, it is also inserted into pg_onnx.model_statistic
--- CREATE OR REPLACE FUNCTION ext_pg_onnx.model_statistic_insert()
---     RETURNS TRIGGER AS
--- $$
--- BEGIN
---     INSERT INTO ext_pg_onnx.model_statistic (name, version) VALUES (NEW.name, NEW.version);
---     RETURN NEW;
--- END;
--- $$
---     LANGUAGE plpgsql;
---
--- CREATE TRIGGER model_statistic_insert
---     AFTER INSERT
---     ON ext_pg_onnx.model
---     FOR EACH ROW
--- EXECUTE PROCEDURE ext_pg_onnx.model_statistic_insert();
-
 
 CREATE TYPE pg_onnx_inspect AS
 (
@@ -83,24 +44,24 @@ CREATE OR REPLACE FUNCTION pg_onnx_import_model(
 ) RETURNS BOOLEAN AS
 $$
 DECLARE
-    result  BOOLEAN;
-    inspect pg_onnx_inspect;
+    model_oid OID;
+    result    BOOLEAN;
+    inspect   pg_onnx_inspect;
 BEGIN
+    inspect := pg_onnx_inspect_model_bin($3);
+    model_oid := lo_from_bytea(0, $3);
+
+    RAISE INFO 'model_oid: %', model_oid;
+
     WITH res
         AS (
-            INSERT INTO ext_pg_onnx.model_bin (name, version, model)
-                VALUES ($1, $2, $3)
-                RETURNING model_bin.name, model_bin.version)
+            INSERT INTO ext_pg_onnx.model
+                (name, version, option, description, inputs, outputs, lo_oid)
+                VALUES ($1, $2, $4, $5, inspect.inputs, inspect.outputs, model_oid)
+                RETURNING model.name, model.version)
     SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
     INTO result
     FROM res;
-
-    IF result THEN
-        inspect := pg_onnx_inspect_model_bin($3);
-        INSERT INTO ext_pg_onnx.model
-            (name, version, option, description, inputs, outputs)
-        VALUES ($1, $2, $4, $5, inspect.inputs, inspect.outputs);
-    END IF;
 
     RETURN result;
 END;
@@ -118,19 +79,13 @@ BEGIN
         AS (
             DELETE FROM ext_pg_onnx.model
                 WHERE model.name = $1 AND model.version = $2
-                RETURNING model.name, model.version)
+                RETURNING model.name, model.version, model.lo_oid),
+        lo_del AS (SELECT lo_unlink(res.lo_oid) FROM res)
     SELECT CASE
                WHEN COUNT(*) > 0 THEN TRUE
                ELSE FALSE END
     INTO result
     FROM res;
-
-    IF result THEN
-        DELETE
-        FROM ext_pg_onnx.model_bin
-        WHERE model_bin.name = $1
-          AND model_bin.version = $2;
-    END IF;
 
     RETURN result;
 END;
@@ -188,3 +143,37 @@ AS
 'pg_onnx_internal_execute_session'
     LANGUAGE C IMMUTABLE
                STRICT;
+
+
+
+-- CREATE TABLE ext_pg_onnx.model_statistic
+-- (
+--     name       TEXT                     NOT NULL,
+--     version    TEXT                     NOT NULL,
+--
+--     execute    BIGINT                   NOT NULL DEFAULT 0,
+--     success    BIGINT                   NOT NULL DEFAULT 0,
+--     fail       BIGINT                   NOT NULL DEFAULT 0,
+--
+--     updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
+--     PRIMARY KEY (name, version),
+--     FOREIGN KEY (name, version) REFERENCES ext_pg_onnx.model (name, version) ON DELETE CASCADE
+-- );
+
+-- When a record is inserted into pg_onnx.model, it is also inserted into pg_onnx.model_statistic
+-- CREATE OR REPLACE FUNCTION ext_pg_onnx.model_statistic_insert()
+--     RETURNS TRIGGER AS
+-- $$
+-- BEGIN
+--     INSERT INTO ext_pg_onnx.model_statistic (name, version) VALUES (NEW.name, NEW.version);
+--     RETURN NEW;
+-- END;
+-- $$
+--     LANGUAGE plpgsql;
+--
+-- CREATE TRIGGER model_statistic_insert
+--     AFTER INSERT
+--     ON ext_pg_onnx.model
+--     FOR EACH ROW
+-- EXECUTE PROCEDURE ext_pg_onnx.model_statistic_insert();
+

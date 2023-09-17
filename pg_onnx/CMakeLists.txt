@@ -49,7 +49,7 @@ add_postgresql_extension(
 
         ${SOURCE_FILES}
 
-        SCRIPTS pg_onnx--1.1.0.sql
+        SCRIPTS pg_onnx--1.2.0.sql
         REGRESS ${REGRESS_FILES}
 )
 

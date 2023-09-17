@@ -53,6 +53,8 @@ find_program(
         PATHS ${PostgreSQL_ROOT_DIRECTORIES}
         PATH_SUFFIXES bin)
 
+#set(PG_CONFIG /usr/local/pgsql/bin/pg_config)
+
 if (NOT PG_CONFIG)
     message(FATAL_ERROR "Could not find pg_config")
 else ()

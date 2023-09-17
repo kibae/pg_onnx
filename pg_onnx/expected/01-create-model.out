@@ -26,16 +26,17 @@ SELECT pg_onnx_import_model(
         '{}',
         'sample model'
     );
-ERROR:  duplicate key value violates unique constraint "model_bin_pkey"
+ERROR:  duplicate key value violates unique constraint "model_pkey"
 DETAIL:  Key (name, version)=(sample_model, 1) already exists.
 CONTEXT:  SQL statement "WITH res
         AS (
-            INSERT INTO ext_pg_onnx.model_bin (name, version, model)
-                VALUES ($1, $2, $3)
-                RETURNING model_bin.name, model_bin.version)
+            INSERT INTO ext_pg_onnx.model
+                (name, version, option, description, inputs, outputs, lo_oid)
+                VALUES ($1, $2, $4, $5, inspect.inputs, inspect.outputs, model_oid)
+                RETURNING model.name, model.version)
     SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END
                     FROM res"
-PL/pgSQL function pg_onnx_import_model(text,text,bytea,jsonb,text) line 6 at SQL statement
+PL/pgSQL function pg_onnx_import_model(text,text,bytea,jsonb,text) line 12 at SQL statement
 SELECT pg_onnx_import_model(
         'sample_model',
         '2',

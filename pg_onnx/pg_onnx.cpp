@@ -30,8 +30,9 @@ Datum pg_onnx_inspect_model_bin(PG_FUNCTION_ARGS) {
 		// args: model BYTEA
 		auto model_datum = PG_GETARG_DATUM(0);
 		auto model_data = DatumGetByteaPP(model_datum);
-		auto model_size = VARSIZE_ANY_EXHDR(model_data);
-		Orts::onnx::session session(Orts::onnx::session_key("__tmp", "__tmp"), VARDATA(model_data), model_size);
+		Orts::onnx::session session(
+			Orts::onnx::session_key("__tmp", "__tmp"), VARDATA_ANY(model_data), VARSIZE_ANY_EXHDR(model_data)
+		);
 		auto session_info = session.to_json();
 
 		BlessTupleDesc(tuple_desc);
@@ -137,7 +138,7 @@ Datum pg_onnx_internal_execute_session(PG_FUNCTION_ARGS) {
 	if (name.empty() || version.empty() || !JsonContainerIsObject(&inputs_jsonb->root))
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("invalid argument")));
 
-	auto inputs = JsonbToCString(nullptr, &inputs_jsonb->root, VARSIZE(inputs_jsonb));
+	auto inputs = JsonbToCString(nullptr, &inputs_jsonb->root, VARSIZE_ANY_EXHDR(inputs_jsonb));
 
 	auto state = extension_state();
 	Assert(state != NULL);

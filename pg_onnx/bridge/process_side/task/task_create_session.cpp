@@ -7,14 +7,51 @@
 #include "pg_srf_macro.h"
 #include "session_response_macro.h"
 
+#include <libpq/libpq-fs.h>
+
+class lo_post_data : public post_data {
+	Datum _fd = -1;
+	size_t offset = 0;
+
+  public:
+	lo_post_data(Oid oid) : post_data() {
+		auto fd = DatumGetInt32(DirectFunctionCall2(be_lo_open, oid, Int32GetDatum(INV_READ)));
+		if (fd < 0)
+			throw std::runtime_error("failed to open large object");
+
+		_fd = Int32GetDatum(fd);
+
+		DirectFunctionCall3(be_lo_lseek64, _fd, Int64GetDatum(0), Int32GetDatum(SEEK_END));
+		_content_length = DatumGetInt64(DirectFunctionCall1(be_lo_tell64, _fd));
+		DirectFunctionCall3(be_lo_lseek64, _fd, Int64GetDatum(0), Int32GetDatum(SEEK_SET));
+	};
+
+	~lo_post_data() {
+		if (_fd >= 0)
+			DirectFunctionCall1(be_lo_close, _fd);
+	}
+
+	bool eof() override {
+		return offset >= _content_length;
+	}
+
+	size_t read(char *buffer, size_t size) override {
+		auto data = DatumGetByteaP(DirectFunctionCall2(be_loread, _fd, Int32GetDatum(size)));
+		size_t data_size = VARSIZE_ANY_EXHDR(data);
+
+		memcpy(buffer, VARDATA_ANY(data), data_size);
+		offset += data_size;
+		return data_size;
+	}
+};
+
 typedef struct model_info_t {
-	std::vector<unsigned char> bin;
+	std::shared_ptr<lo_post_data> bin = nullptr;
 	json option;
 } model_info_t;
 
-model_info_t &get_model(const std::string &model_name, const std::string &model_version) {
-	std::string sql("SELECT model_bin.model, model.option FROM ext_pg_onnx.model JOIN ext_pg_onnx.model_bin "
-					"USING(name, version) WHERE model.name=$1 AND model.version=$2");
+std::shared_ptr<model_info_t> get_model(const std::string &model_name, const std::string &model_version) {
+	std::string sql("SELECT lo_oid, option FROM ext_pg_onnx.model WHERE name=$1 AND version=$2");
 
 	int ret = SPI_connect();
 	if (ret != SPI_OK_CONNECT) {
@@ -41,31 +78,29 @@ model_info_t &get_model(const std::string &model_name, const std::string &model_
 		throw std::runtime_error("model not found");
 	}
 
-	static model_info_t model_info;
-	model_info.bin.clear();
-	model_info.option.clear();
-
 	bool is_null;
-	auto binary_datum = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &is_null);
+	auto oid_datum = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 1, &is_null);
 	if (is_null) {
 		SPI_finish();
 		throw std::runtime_error("model not found");
 	}
-	auto binary_data = DatumGetByteaPP(binary_datum);
-	model_info.bin.resize(VARSIZE_ANY_EXHDR(binary_data));
-	memcpy(model_info.bin.data(), VARDATA(binary_data), VARSIZE_ANY_EXHDR(binary_data));
 
+	json option;
 	// option can be null.
 	auto option_val = SPI_getbinval(SPI_tuptable->vals[0], SPI_tuptable->tupdesc, 2, &is_null);
 	if (is_null) {
-		model_info.option = json::object();
+		option = json::object();
 	} else {
 		Jsonb *option_datum = DatumGetJsonbP(option_val);
-		auto option_data = JsonbToCString(nullptr, &option_datum->root, VARSIZE(option_datum));
+		auto option_data = JsonbToCString(nullptr, &option_datum->root, VARSIZE_ANY_EXHDR(option_datum));
 
-		model_info.option = strlen(option_data) > 1 ? json::parse(option_data) : json::object();
+		option = strlen(option_data) > 1 ? json::parse(option_data) : json::object();
 		pfree(option_data);
 	}
+
+	auto model_info = std::make_shared<model_info_t>();
+	model_info->bin = std::make_shared<lo_post_data>(DatumGetObjectId(oid_datum));
+	model_info->option = option;
 
 	SPI_finish();
 	return model_info;
@@ -77,10 +112,9 @@ json create_session(extension_state_t *state, const std::string &name, const std
 	auto request = json::object();
 	request["model"] = name;
 	request["version"] = version;
-	request["option"] = model.option;
+	request["option"] = model->option;
 
-	auto result =
-		api_request(state, Orts::task::type::CREATE_SESSION, request, (const char *)model.bin.data(), model.bin.size());
+	auto result = api_request(state, Orts::task::type::CREATE_SESSION, request, model->bin);
 	if (result.is_object() && result.contains("error"))
 		throw std::runtime_error(result["error"].get<std::string>());
 	return result;
