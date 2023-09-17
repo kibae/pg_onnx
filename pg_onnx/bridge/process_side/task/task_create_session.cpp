@@ -114,6 +114,9 @@ json create_session(extension_state_t *state, const std::string &name, const std
 	request["version"] = version;
 	request["option"] = model->option;
 
+	// TODO: If onnxruntime-server is remote, pass model binary data as post body, if local, save to temporary file and
+	// pass filename
+
 	auto result = api_request(state, Orts::task::type::CREATE_SESSION, request, model->bin);
 	if (result.is_object() && result.contains("error"))
 		throw std::runtime_error(result["error"].get<std::string>());
