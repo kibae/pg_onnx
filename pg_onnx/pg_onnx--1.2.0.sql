@@ -51,7 +51,7 @@ BEGIN
     inspect := pg_onnx_inspect_model_bin($3);
     model_oid := lo_from_bytea(0, $3);
 
-    RAISE INFO 'model_oid: %', model_oid;
+    -- RAISE NOTICE 'model_oid: %', model_oid;
 
     WITH res
         AS (
