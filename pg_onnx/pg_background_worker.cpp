@@ -50,6 +50,9 @@ void _PG_init(void) {
 
 	init_config(state);
 
+	if (is_onnxruntime_server_remote(state))
+		return;
+
 	MemSet(&worker, 0, sizeof(BackgroundWorker));
 	worker.bgw_flags = BGWORKER_SHMEM_ACCESS | BGWORKER_BACKEND_DATABASE_CONNECTION;
 	worker.bgw_start_time = BgWorkerStart_RecoveryFinished;

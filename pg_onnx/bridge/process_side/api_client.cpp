@@ -6,7 +6,9 @@
 
 #include "transport/tcp/tcp_server.hpp"
 
-json api_request(extension_state_t *state, int16_t type, const json &request_json, std::shared_ptr<post_data> post) {
+json api_request(
+	extension_state_t *state, int16_t type, const json &request_json, const std::shared_ptr<post_data> &post
+) {
 	// elog(LOG, "api_request: %d, %s", type, body.dump().c_str());
 
 	auto json = request_json.dump();
@@ -35,10 +37,11 @@ json api_request(extension_state_t *state, int16_t type, const json &request_jso
 		throw std::runtime_error(ec.message());
 
 	if (post != nullptr) {
-		char buffer[MAX_RECV_BUF_LENGTH];
+		std::string buffer;
+		buffer.resize(MAX_RECV_BUF_LENGTH);
 		while (!post->eof()) {
-			std::size_t bytes_read = post->read(buffer, sizeof(buffer));
-			boost::asio::write(socket, boost::asio::buffer(buffer, bytes_read), ec);
+			std::size_t bytes_read = post->read(buffer.data(), buffer.size());
+			boost::asio::write(socket, boost::asio::buffer(buffer.data(), bytes_read), ec);
 			if (ec)
 				throw std::runtime_error(ec.message());
 		}

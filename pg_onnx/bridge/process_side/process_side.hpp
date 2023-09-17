@@ -24,7 +24,7 @@ class post_data {
 };
 
 json api_request(
-	extension_state_t *state, int16_t type, const json &request_json, std::shared_ptr<post_data> post = nullptr
+	extension_state_t *state, int16_t type, const json &request_json, const std::shared_ptr<post_data> &post = nullptr
 );
 
 #endif // PG_ONNX_PROCESS_SIDE_HPP

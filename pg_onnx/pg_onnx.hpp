@@ -59,8 +59,9 @@ typedef struct {
 	char config_onnxruntime_server_hostname[CONFIG_MAX_LENGTH]; // for remote standalone worker
 	int config_onnxruntime_server_port;							// for remote standalone worker
 	int config_num_threads;
-} extension_state_t;
+} __attribute__((packed)) extension_state_t;
 
 extension_state_t *extension_state();
+bool is_onnxruntime_server_remote(const extension_state_t *);
 
 #endif // PG_ONNX_PG_ONNX_HPP

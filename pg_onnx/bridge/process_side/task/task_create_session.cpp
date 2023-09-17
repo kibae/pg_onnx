@@ -114,10 +114,30 @@ json create_session(extension_state_t *state, const std::string &name, const std
 	request["version"] = version;
 	request["option"] = model->option;
 
-	// TODO: If onnxruntime-server is remote, pass model binary data as post body, if local, save to temporary file and
-	// pass filename
+	// If onnxruntime-server is running in remote, pass model binary data as post body,
+	// if running in local, save to temporary file and pass file path.
+	File tmp_file = -1;
+	if (!is_onnxruntime_server_remote(state)) {
+		tmp_file = OpenTemporaryFile(false);
+		std::string buffer;
+		buffer.resize(1024 * 1024 * 4);
+		off_t offset = 0;
+		while (!model->bin->eof()) {
+			auto bytes_read = model->bin->read(buffer.data(), buffer.size());
+			auto written = FileWrite(tmp_file, buffer.data(), bytes_read, offset, WAIT_EVENT_DATA_FILE_WRITE);
+			if (written <= 0)
+				throw std::runtime_error("failed to write temporary file");
+			offset += written;
+		}
+
+		request["option"]["path"] = FilePathName(tmp_file);
+		model->bin = nullptr;
+	}
 
 	auto result = api_request(state, Orts::task::type::CREATE_SESSION, request, model->bin);
+	if (tmp_file >= 0)
+		FileClose(tmp_file);
+
 	if (result.is_object() && result.contains("error"))
 		throw std::runtime_error(result["error"].get<std::string>());
 	return result;

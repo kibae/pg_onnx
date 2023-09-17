@@ -26,3 +26,7 @@ extension_state_t *extension_state() {
 
 	return state;
 }
+
+bool is_onnxruntime_server_remote(const extension_state_t *st) {
+	return st->config_onnxruntime_server_port > 0 && strlen(st->config_onnxruntime_server_hostname) > 0;
+}
