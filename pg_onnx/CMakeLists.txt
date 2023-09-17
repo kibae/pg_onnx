@@ -44,7 +44,7 @@ include_directories(${Boost_INCLUDE_DIR} ${ONNX_RUNTIME_INCLUDE_DIR} ${OPENSSL_I
 
 add_postgresql_extension(
         ${PROJECT_NAME}
-        VERSION 1.1.0
+        VERSION 1.2.0
         SOURCES
 
         ${SOURCE_FILES}
