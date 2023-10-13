@@ -36,6 +36,8 @@ extern "C" {
 #include <utils/wait_event.h>
 }
 
+// conflict Float16Impl::abs and Abs in postgres/server/c.h
+#undef Abs
 #include "onnxruntime_server.hpp"
 #include <iostream>
 #include <list>
