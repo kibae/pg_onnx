@@ -1,6 +1,6 @@
 # pg_onnx
 
-[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.16.3&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
+[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.17.0&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
 [![CMake on Linux](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml)
 [![CMake on MacOS](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
@@ -144,22 +144,22 @@ CREATE EXTENSION IF NOT EXISTS pg_onnx;
 
 ```sql
 SELECT pg_onnx_import_model(
-        'sample_model', --------------- model name
-        'v20230101', ------------------ model version 
-        PG_READ_BINARY_FILE('/your_model_path/model.onnx')::bytea, -- model binary data
-        '{"cuda": true}'::jsonb, ------ options
-        'sample model' ---------------- description
-    );
+               'sample_model', --------------- model name
+               'v20230101', ------------------ model version 
+               PG_READ_BINARY_FILE('/your_model_path/model.onnx')::bytea, -- model binary data
+               '{"cuda": true}'::jsonb, ------ options
+               'sample model' ---------------- description
+       );
 
 SELECT pg_onnx_execute_session(
-        'sample_model', -- model name
-        'v20230101', ----- model version
-        '{
-          "x": [[1], [2], [3]],
-          "y": [[3], [4], [5]],
-          "z": [[5], [6], [7]]
-        }' --------------- inputs
-    );
+               'sample_model', -- model name
+               'v20230101', ----- model version
+               '{
+                 "x": [[1], [2], [3]],
+                 "y": [[3], [4], [5]],
+                 "z": [[5], [6], [7]]
+               }' --------------- inputs
+       );
 ```
 
 - Depending on the type and shape of the inputs and outputs of the ML model, you can see different results. Below is an
