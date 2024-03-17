@@ -20,14 +20,14 @@ jobs:
         id: cache-test-fixtures
         uses: actions/cache@v4
         with:
-          path: test/fixture
+          path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
 
       - name: Download assets(models)
         if: steps.cache-test-fixtures.outputs.cache-hit != 'true'
         shell: bash
         run: |
-          ./test/fixture/download-test-fixtures.sh
+          ./onnxruntime-server/test/fixture/download-test-fixtures.sh
 
   prepare-apt:
     runs-on: ubuntu-latest
