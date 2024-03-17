@@ -32,11 +32,11 @@ jobs:
         shell: bash
         run: |
           brew update
-          brew install cmake onnxruntime boost postgresql googletest
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake onnxruntime boost postgresql googletest
 
       - name: Cache test fixtures
         id: cache-test-fixtures
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
