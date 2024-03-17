@@ -34,19 +34,6 @@ jobs:
           brew update
           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake onnxruntime boost postgresql googletest
 
-      - name: Cache test fixtures
-        id: cache-test-fixtures
-        uses: actions/cache@v4
-        with:
-          path: onnxruntime-server/test/fixture
-          key: test-fixtures-v1
-
-      - name: Download assets(models)
-        if: steps.cache-test-fixtures.outputs.cache-hit != 'true'
-        shell: bash
-        run: |
-          ./onnxruntime-server/test/fixture/download-test-fixtures.sh
-
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
         id: strings
@@ -69,6 +56,19 @@ jobs:
         run: |
           cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 4
           sudo cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
+
+      - name: Cache test fixtures
+        id: cache-test-fixtures
+        uses: actions/cache@v4
+        with:
+          path: onnxruntime-server/test/fixture
+          key: test-fixtures-v1
+
+      - name: Download assets(models)
+        if: steps.cache-test-fixtures.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          ./onnxruntime-server/test/fixture/download-test-fixtures.sh
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
