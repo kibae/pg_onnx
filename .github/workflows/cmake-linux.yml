@@ -15,6 +15,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           lfs: false
+          submodules: true
 
       - name: Cache test fixtures
         id: cache-test-fixtures
