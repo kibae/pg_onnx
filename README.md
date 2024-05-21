@@ -1,6 +1,6 @@
 # pg_onnx
 
-[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.17.3&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
+[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.18.0&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
 [![CMake on Linux](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml)
 [![CMake on MacOS](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
