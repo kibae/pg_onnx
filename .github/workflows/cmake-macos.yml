@@ -28,16 +28,17 @@ jobs:
           lfs: false
           submodules: true
 
+      - name: Prepare container(onnxruntime)
+        shell: bash
+        run: |
+          ./onnxruntime-server/.github/actions/download-onnxruntime-osx.sh
+          [ -d "/usr/local/onnxruntime/lib" ] || { echo "Directory /usr/local/onnxruntime/lib does not exist."; exit 1; }
+
       - name: Prepare container(homebrew)
         shell: bash
         run: |
           brew update
           HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake boost postgresql googletest
-
-      - name: Prepare container(onnxruntime)
-        shell: bash
-        run: |
-          ./onnxruntime-server/.github/actions/download-onnxruntime-osx.sh
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -80,7 +81,8 @@ jobs:
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: |
           PG_LIBDIR=$(pg_config --libdir)
-          install_name_tool -change @rpath/libonnxruntime.dylib /usr/local/onnxruntime/lib/libonnxruntime.dylib ${PG_LIBDIR}/pg_onnx.so
+          ONNXRUNTIME_LIB=$(ls -S /usr/local/onnxruntime/lib | head -n 1)
+          install_name_tool -change @rpath/${ONNXRUNTIME_LIB} /usr/local/onnxruntime/lib/${ONNXRUNTIME_LIB} ${PG_LIBDIR}/pg_onnx.so
           ctest --extra-verbose --build-config ${{ matrix.build_type }}
 
       - name: Upload artifact
