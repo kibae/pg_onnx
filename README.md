@@ -98,8 +98,16 @@ brew install onnxruntime
 
 ```shell
 sudo apt install cmake libboost-all-dev libpq-dev postgresql-server-dev-all
-# optional, for Nvidia GPU support
-sudo apt install nvidia-cuda-toolkit nvidia-cudnn
+```
+
+##### (optional) CUDA support (CUDA 12.x, cuDNN 9.x)
+
+- Follow the instructions below to install the CUDA Toolkit and cuDNN.
+    - [CUDA Toolkit Installation Guide](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
+    - [CUDA Download for Ubuntu](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_network)
+
+```shell
+sudo apt install cuda-toolkit-12 libcudnn9-dev-cuda-12
 ```
 
 #### Mac OS
