@@ -1,0 +1,30 @@
+name: Prepare Asset
+
+on:
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
+
+jobs:
+  prepare-asset:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+          submodules: true
+
+      - name: Cache test fixtures
+        id: cache-test-fixtures
+        uses: actions/cache@v4
+        with:
+          path: onnxruntime-server/test/fixture
+          key: test-fixtures-v1
+
+      - name: Download assets(models)
+        if: steps.cache-test-fixtures.outputs.cache-hit != 'true'
+        shell: bash
+        run: |
+          ./onnxruntime-server/test/fixture/download-test-fixtures.sh
