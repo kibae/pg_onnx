@@ -27,6 +27,7 @@ jobs:
         with:
           lfs: false
           submodules: true
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Prepare container(homebrew)
         shell: bash

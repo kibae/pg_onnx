@@ -31,7 +31,7 @@ jobs:
         with:
           lfs: false
           submodules: true
-          ref: ${{ github.event.workflow_run.head_branch }}
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - name: Cache dependencies(apt)
         id: cache-dependencies-apt
