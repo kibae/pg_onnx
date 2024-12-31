@@ -12,9 +12,8 @@ extension_state_t *extension_state() {
 		return state;
 	}
 	bool found = false;
-
 	auto size = sizeof(extension_state_t);
-	RequestAddinShmemSpace(size);
+	// RequestAddinShmemSpace(size);
 	state = (extension_state_t *)ShmemInitStruct("pg_onnx_state", size, &found);
 	if (!found) {
 		memset(state, 0, size);
