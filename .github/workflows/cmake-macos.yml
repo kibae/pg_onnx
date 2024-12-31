@@ -1,11 +1,10 @@
 name: CMake on MacOS
 
 on:
-  workflow_run:
-    workflows:
-      - Prepare Asset
-    types:
-      - completed
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
   build:
@@ -27,8 +26,6 @@ jobs:
         with:
           lfs: false
           submodules: true
-          ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0
 
       - name: Prepare container(homebrew)
         shell: bash

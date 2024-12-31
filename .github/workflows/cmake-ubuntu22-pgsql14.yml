@@ -1,13 +1,50 @@
 name: CMake on Ubuntu 22.04, PostgreSQL 14
 
 on:
-  workflow_run:
-    workflows:
-      - Prepare Linux
-    types:
-      - completed
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
+  prepare-apt:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ ubuntu-22.04 ]
+        build_type: [ Debug ]
+        include:
+          - os: ubuntu-22.04
+            pg_server_dev_pkg: postgresql-server-dev-14
+            display-name: Ubuntu 22.04, PostgreSQL 14
+          - os: ubuntu-24.04
+            pg_server_dev_pkg: postgresql-server-dev-16
+            display-name: Ubuntu 24.04, PostgreSQL 16
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: false
+
+      - name: Cache dependencies(apt)
+        id: cache-dependencies-apt
+        uses: actions/cache@v4
+        with:
+          path: .github/cache/dependencies-apt
+          key: ${{ matrix.os }}-dependencies-apt-v1
+
+      - name: Prepare container(apt download)
+        shell: bash
+        if: steps.cache-dependencies-apt.outputs.cache-hit != 'true' && (startsWith(matrix.os, 'debian-') || startsWith(matrix.os, 'ubuntu-'))
+        run: |
+          cat /etc/os-release
+          sudo apt-get update -qq
+          apt search postgresql-server-dev
+          sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev libgtest-dev ${{ matrix.pg_server_dev_pkg }}
+          cp /var/cache/apt/archives/*.deb .github/cache/dependencies-apt/
+
   build:
     runs-on: ${{ matrix.os }}
 
@@ -21,6 +58,8 @@ jobs:
         include:
           - pg: pgsql14
             pg_server_dev_pkg: postgresql-server-dev-14
+          - pg: pgsql16
+            pg_server_dev_pkg: postgresql-server-dev-16
           - c_compiler: gcc
             cpp_compiler: g++
           - c_compiler: clang
@@ -31,8 +70,6 @@ jobs:
         with:
           lfs: false
           submodules: true
-          ref: ${{ github.event.workflow_run.head_branch }}
-          fetch-depth: 0
 
       - name: Cache dependencies(apt)
         id: cache-dependencies-apt
@@ -45,7 +82,9 @@ jobs:
         shell: bash
         if: steps.cache-dependencies-apt.outputs.cache-hit != 'true' && (startsWith(matrix.os, 'debian-') || startsWith(matrix.os, 'ubuntu-'))
         run: |
+          cat /etc/os-release
           sudo apt-get update -qq
+          apt search postgresql-server-dev
           sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev libgtest-dev ${{ matrix.pg_server_dev_pkg }}
           cp /var/cache/apt/archives/*.deb .github/cache/dependencies-apt/
 
