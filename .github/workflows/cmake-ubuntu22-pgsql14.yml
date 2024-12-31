@@ -1,9 +1,8 @@
-name: CMake on Linux
+name: CMake on Ubuntu 22.04, PostgreSQL 14
 
 on:
   workflow_run:
     workflows:
-      - Prepare Asset
       - Prepare Linux
     types:
       - completed
@@ -16,6 +15,7 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-22.04 ]
+        pg_server_dev_pkg: [ postgresql-server-dev-14 ]
         c_compiler: [ gcc, clang ]
         build_type: [ Debug ]
         include:
@@ -23,9 +23,6 @@ jobs:
             cpp_compiler: g++
           - c_compiler: clang
             cpp_compiler: clang++
-          - os: ubuntu-22.04
-            pg_server_dev_pkg: postgresql-server-dev-14
-            display-name: Ubuntu 22.04, PostgreSQL 14
 
     steps:
       - uses: actions/checkout@v4
