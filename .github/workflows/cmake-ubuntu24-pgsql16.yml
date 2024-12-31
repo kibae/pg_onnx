@@ -16,9 +16,9 @@ jobs:
         os: [ ubuntu-24.04 ]
         build_type: [ Debug ]
         include:
-          - os: ubuntu-22.04
-            pg_server_dev_pkg: postgresql-server-dev-14
-            display-name: Ubuntu 22.04, PostgreSQL 14
+          #- os: ubuntu-22.04
+          #  pg_server_dev_pkg: postgresql-server-dev-14
+          #  display-name: Ubuntu 22.04, PostgreSQL 14
           - os: ubuntu-24.04
             pg_server_dev_pkg: postgresql-server-dev-16
             display-name: Ubuntu 24.04, PostgreSQL 16
@@ -56,8 +56,8 @@ jobs:
         c_compiler: [ gcc, clang ]
         build_type: [ Debug ]
         include:
-          - pg: pgsql14
-            pg_server_dev_pkg: postgresql-server-dev-14
+          #- pg: pgsql14
+          # pg_server_dev_pkg: postgresql-server-dev-14
           - pg: pgsql16
             pg_server_dev_pkg: postgresql-server-dev-16
           - c_compiler: gcc
