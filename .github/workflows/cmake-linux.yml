@@ -38,7 +38,14 @@ jobs:
       matrix:
         os: [ ubuntu-20.04, ubuntu-22.04, ubuntu-24.04 ]
         build_type: [ Debug ]
-
+        include:
+          - os: ubuntu-20.04
+            pg_server_dev_pkg: postgresql-server-dev-12
+          - os: ubuntu-22.04
+            pg_server_dev_pkg: postgresql-server-dev-14
+          - os: ubuntu-24.04
+            pg_server_dev_pkg: postgresql-server-dev-16
+    
     steps:
       - uses: actions/checkout@v4
         with:
@@ -58,7 +65,7 @@ jobs:
           cat /etc/os-release
           sudo apt-get update -qq
           apt search postgresql-server-dev
-          sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev postgresql-server-dev-16 libgtest-dev
+          sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev libgtest-dev ${{ matrix.pg_server_dev_pkg }}
           cp /var/cache/apt/archives/*.deb .github/cache/dependencies-apt/
 
 
@@ -79,6 +86,12 @@ jobs:
             cpp_compiler: g++
           - c_compiler: clang
             cpp_compiler: clang++
+          - os: ubuntu-20.04
+            pg_server_dev_pkg: postgresql-server-dev-12
+          - os: ubuntu-22.04
+            pg_server_dev_pkg: postgresql-server-dev-14
+          - os: ubuntu-24.04
+            pg_server_dev_pkg: postgresql-server-dev-16
 
     steps:
       - uses: actions/checkout@v4
@@ -98,7 +111,7 @@ jobs:
         if: steps.cache-dependencies-apt.outputs.cache-hit != 'true' && (startsWith(matrix.os, 'debian-') || startsWith(matrix.os, 'ubuntu-'))
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev postgresql-server-dev-16 libgtest-dev
+          sudo apt-get install -yqf --download-only build-essential clang cmake libboost-all-dev libpq-dev libgtest-dev ${{ matrix.pg_server_dev_pkg }}
           cp /var/cache/apt/archives/*.deb .github/cache/dependencies-apt/
 
       - name: Prepare container(apt)
