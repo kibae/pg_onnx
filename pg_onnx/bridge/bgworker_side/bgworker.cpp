@@ -16,10 +16,9 @@ int bgworker_init(extension_state_t *state, volatile sig_atomic_t *terminated) {
 		config.num_threads = state->config_num_threads;
 
 		boost::asio::io_context io_context;
-		Orts::onnx::session_manager manager(model_bin_getter);
-		Orts::builtin_thread_pool worker_pool(config.num_threads);
+		Orts::onnx::session_manager manager(model_bin_getter, config.num_threads);
 
-		Orts::transport::tcp::tcp_server server(io_context, config, &manager, &worker_pool);
+		Orts::transport::tcp::tcp_server server(io_context, config, manager);
 		state->port = server.port();
 
 		elog(LOG, "onnxruntime-server TCP backend thread ready: port: %d", state->port);
@@ -27,7 +26,6 @@ int bgworker_init(extension_state_t *state, volatile sig_atomic_t *terminated) {
 		while (!*terminated) {
 			io_context.run_for(timeout);
 		}
-		worker_pool.flush();
 	});
 
 	while (!*terminated) {
