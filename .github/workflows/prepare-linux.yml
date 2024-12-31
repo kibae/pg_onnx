@@ -39,6 +39,9 @@ jobs:
         shell: bash
         if: steps.cache-dependencies-apt.outputs.cache-hit != 'true' && (startsWith(matrix.os, 'debian-') || startsWith(matrix.os, 'ubuntu-'))
         run: |
+          echo "token"
+          echo ${{ secrets.GITHUB_TOKEN }}
+          
           cat /etc/os-release
           sudo apt-get update -qq
           apt search postgresql-server-dev
