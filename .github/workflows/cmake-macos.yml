@@ -1,11 +1,10 @@
-name: CMake on MacOS
+name: Works on MacOS
 
 on:
-  workflow_run:
-    workflows:
-      - Prepare Asset
-    types:
-      - completed
+  push:
+    branches: [ "*" ]
+  pull_request:
+    branches: [ "*" ]
 
 jobs:
   build:

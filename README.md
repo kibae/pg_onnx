@@ -1,7 +1,8 @@
 # pg_onnx
 
 [![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.20.1&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
-[![CMake on Linux](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-linux.yml)
+[![Works w/PostgreSQL 14(on Ubuntu 22.04)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu22-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu22-pgsql14.yml)
+[![Works w/PostgreSQL 16(on Ubuntu 24.04)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu24-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu24-pgsql16.yml)
 [![CMake on MacOS](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
 
@@ -67,7 +68,7 @@ graph LR
 
 ## Requirements
 
-- [PostgreSQL](https://www.postgresql.org/)
+- [PostgreSQL](https://www.postgresql.org/) >= 14
 - [ONNX Runtime](https://onnxruntime.ai/)
 - [Boost](https://www.boost.org/)
 - [CMake](https://cmake.org/)
