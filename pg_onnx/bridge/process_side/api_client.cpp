@@ -21,7 +21,7 @@ json api_request(
 	boost::asio::io_context io_context;
 	boost::asio::ip::tcp::socket socket(io_context);
 	// TODO: Use state->config_onnxruntime_server_hostname, state->config_onnxruntime_server_port for remote standalone
-	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::address::from_string("127.0.0.1"), state->port);
+	boost::asio::ip::tcp::endpoint endpoint(boost::asio::ip::make_address("127.0.0.1"), state->port);
 
 	boost::system::error_code ec;
 	socket.connect(endpoint, ec);
@@ -47,7 +47,7 @@ json api_request(
 		}
 	}
 
-	struct Orts::transport::tcp::protocol_header res_header {};
+	struct Orts::transport::tcp::protocol_header res_header{};
 
 	std::string res_data;
 	while (true) {
