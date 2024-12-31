@@ -1,4 +1,4 @@
-name: CMake on Ubuntu 24.04, PostgreSQL 16
+name: Works w/PostgreSQL 16(on Ubuntu 24.04)
 
 on:
   push:

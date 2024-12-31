@@ -1,4 +1,4 @@
-name: CMake on MacOS
+name: Works on MacOS
 
 on:
   push:
