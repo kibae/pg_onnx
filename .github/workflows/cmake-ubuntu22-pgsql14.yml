@@ -15,10 +15,12 @@ jobs:
       fail-fast: false
       matrix:
         os: [ ubuntu-22.04 ]
-        pg_server_dev_pkg: [ postgresql-server-dev-14 ]
+        pg: [ pgsql14 ]
         c_compiler: [ gcc, clang ]
         build_type: [ Debug ]
         include:
+          - pg: pgsql14
+            pg_server_dev_pkg: postgresql-server-dev-14
           - c_compiler: gcc
             cpp_compiler: g++
           - c_compiler: clang
