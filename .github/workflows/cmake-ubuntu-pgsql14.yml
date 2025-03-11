@@ -36,7 +36,8 @@ jobs:
           sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
           curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
           sudo apt update
-          sudo apt-get install -yqf build-essential libboost-all-dev libgtest-dev postgresql-server-dev-${{ matrix.pgsql_version }}
+          sudo apt-get install -yqf build-essential libboost-all-dev libgtest-dev postgresql-${{ matrix.pgsql_version }} postgresql-server-dev-${{ matrix.pgsql_version }}
+          pg_config
 
       - name: Prepare container(onnxruntime)
         shell: bash
@@ -69,7 +70,7 @@ jobs:
       - name: (Cache) Restore test fixtures
         uses: actions/cache/restore@v4
         with:
-          path: test/fixture
+          path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
           fail-on-cache-miss: true
 

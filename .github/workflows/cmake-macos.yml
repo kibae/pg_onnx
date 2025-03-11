@@ -55,18 +55,12 @@ jobs:
         run: |
           sudo cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target install --parallel 4
 
-      - name: Cache test fixtures
-        id: cache-test-fixtures
-        uses: actions/cache@v4
+      - name: (Cache) Restore test fixtures
+        uses: actions/cache/restore@v4
         with:
           path: onnxruntime-server/test/fixture
           key: test-fixtures-v1
-
-      - name: Download assets(models)
-        if: steps.cache-test-fixtures.outputs.cache-hit != 'true'
-        shell: bash
-        run: |
-          ./onnxruntime-server/test/fixture/download-test-fixtures.sh
+          fail-on-cache-miss: true
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
@@ -80,8 +74,9 @@ jobs:
 
       - name: Upload artifact
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: output-artifact
+          name: output-artifact-${{ matrix.os }}-pgsql${{ matrix.pgsql_version }}
           path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.*
           if-no-files-found: ignore
+          overwrite: true
