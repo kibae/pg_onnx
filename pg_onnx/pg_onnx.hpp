@@ -11,9 +11,9 @@ extern "C" {
 #include <string.h>
 #include <unistd.h>
 
-#include <server/postgres.h>
+#include <postgres.h>
 
-#include <server/fmgr.h>
+#include <fmgr.h>
 
 #include <access/xact.h>
 #include <commands/dbcommands.h>
