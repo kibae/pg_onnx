@@ -1,4 +1,4 @@
-name: Works w/PostgreSQL 15
+name: Works w/PostgreSQL 15(on Ubuntu)
 
 on:
   push:

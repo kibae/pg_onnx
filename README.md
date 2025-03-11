@@ -3,8 +3,12 @@
 [![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.20.1&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
 
-[![Works w/PostgreSQL 14(on Ubuntu 22.04)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu22-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu22-pgsql14.yml)
-[![Works w/PostgreSQL 16(on Ubuntu 24.04)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu24-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu24-pgsql16.yml)
+[![Works w/PostgreSQL 13(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml)
+[![Works w/PostgreSQL 14(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml)
+[![Works w/PostgreSQL 15(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml)
+[![Works w/PostgreSQL 16(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml)
+[![Works w/PostgreSQL 17(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml)
+
 [![Works on MacOS](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml)
 
 ----
@@ -147,7 +151,8 @@ sudo cmake --install build/pg_onnx
 ## Install extension
 
 ```sql
-CREATE EXTENSION IF NOT EXISTS pg_onnx;
+CREATE
+EXTENSION IF NOT EXISTS pg_onnx;
 ```
 
 ## Simple Usage
@@ -201,13 +206,15 @@ CREATE TABLE trigger_test
 );
 
 -- Create a trigger function
-CREATE OR REPLACE FUNCTION trigger_test_insert()
+CREATE
+OR REPLACE FUNCTION trigger_test_insert()
     RETURNS TRIGGER AS
 $$
 DECLARE
-    result jsonb;
+result jsonb;
 BEGIN
-    result := pg_onnx_execute_session(
+    result
+:= pg_onnx_execute_session(
             'sample_model', 'v20230101',
             JSONB_BUILD_OBJECT(
                     'x', ARRAY [[NEW.value1]],
@@ -216,18 +223,19 @@ BEGIN
 
     -- output shape: float[-1,1]
     -- eg: {"output": [[0.6492120623588562]]}
-    NEW.prediction := result -> 'output' -> 0 -> 0;
-    RETURN NEW;
+    NEW.prediction
+:= result -> 'output' -> 0 -> 0;
+RETURN NEW;
 END;
 $$
-    LANGUAGE plpgsql;
+LANGUAGE plpgsql;
 
 -- Create a trigger
 CREATE TRIGGER trigger_test_insert
     BEFORE INSERT
     ON trigger_test
     FOR EACH ROW
-EXECUTE PROCEDURE trigger_test_insert();
+    EXECUTE PROCEDURE trigger_test_insert();
 ```
 
 ----
