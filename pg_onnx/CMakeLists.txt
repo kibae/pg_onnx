@@ -40,7 +40,7 @@ endif ()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../cmake)
 find_package(PostgreSQL REQUIRED)
 
-include_directories(${Boost_INCLUDE_DIR} ${ONNX_RUNTIME_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${PostgreSQL_SERVER_INCLUDE_DIRS} ../onnxruntime-server/src)
+include_directories(${Boost_INCLUDE_DIR} ${ONNX_RUNTIME_INCLUDE_DIRS} ${OPENSSL_INCLUDE_DIR} ${PostgreSQL_INCLUDE_DIRS} ${PostgreSQL_SERVER_INCLUDE_DIRS} ../onnxruntime-server/src)
 link_directories(${Boost_LIBRARY_DIRS} ${ONNX_RUNTIME_LIBRARY_DIRS} ${OPENSSL_LIBRARY_DIRS})
 
 add_postgresql_extension(
