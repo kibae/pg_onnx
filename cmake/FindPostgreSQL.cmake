@@ -99,6 +99,7 @@ if (PostgreSQL_FOUND)
 
     set(PostgreSQL_INCLUDE_DIRS
             "${_pg_includedir}"
+            "${_pg_includedir_server}/.."
             CACHE PATH
             "Top-level directory containing the PostgreSQL include directories."
     )
