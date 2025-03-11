@@ -39,8 +39,6 @@ jobs:
           sudo apt-get install -yqf build-essential libboost-all-dev libgtest-dev postgresql-${{ matrix.pgsql_version }} postgresql-server-dev-${{ matrix.pgsql_version }}
           echo
           pg_config
-          echo
-          find /usr -name "postgres.h"
 
       - name: Prepare container(onnxruntime)
         shell: bash
@@ -62,6 +60,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} \
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} \
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} \
+          -DPG_CONFIG=/usr/lib/postgresql/${{ matrix.pgsql_version }}/bin/pg_config \
           -S ${{ github.workspace }}
           
           echo
