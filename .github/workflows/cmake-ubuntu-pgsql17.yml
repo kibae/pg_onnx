@@ -81,8 +81,9 @@ jobs:
 
       - name: Upload artifact
         if: failure()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: output-artifact
+          name: output-artifact-${{ matrix.os }}-pgsql${{ matrix.pgsql_version }}
           path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.*
           if-no-files-found: ignore
+          overwrite: true
