@@ -1,4 +1,4 @@
-name: Works on MacOS
+name: Works w/PostgreSQL 17(on MacOS)
 
 on:
   push:
@@ -12,11 +12,11 @@ jobs:
 
     strategy:
       fail-fast: false
-
       matrix:
         os: [ macos-latest ]
         build_type: [ Debug ]
         c_compiler: [ clang ]
+        pgsql_version: [ 17 ]
         include:
           - c_compiler: clang
             cpp_compiler: clang++
@@ -31,7 +31,7 @@ jobs:
         shell: bash
         run: |
           brew update
-          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake boost postgresql googletest onnxruntime
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake boost googletest onnxruntime postgresql@${{ matrix.pgsql_version }}
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -48,12 +48,14 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DPG_CONFIG=/opt/homebrew/opt/postgresql@${{ matrix.pgsql_version }}/bin/pg_config
           -S ${{ github.workspace }}
 
       - name: Build
         # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         run: |
-          sudo cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --target install --parallel 4
+          cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 4
+          sudo cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
 
       - name: (Cache) Restore test fixtures
         uses: actions/cache/restore@v4
@@ -66,11 +68,7 @@ jobs:
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
         # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
-        run: |
-          PG_LIBDIR=$(pg_config --libdir)
-          ONNXRUNTIME_LIB=$(ls -S /usr/local/onnxruntime/lib | head -n 1)
-          install_name_tool -change @rpath/${ONNXRUNTIME_LIB} /usr/local/onnxruntime/lib/${ONNXRUNTIME_LIB} ${PG_LIBDIR}/pg_onnx.so
-          ctest --extra-verbose --build-config ${{ matrix.build_type }}
+        run: ctest --extra-verbose --build-config ${{ matrix.build_type }}
 
       - name: Upload artifact
         if: failure()

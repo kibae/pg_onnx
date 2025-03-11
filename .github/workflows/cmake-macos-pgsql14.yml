@@ -1,4 +1,4 @@
-name: Works w/PostgreSQL 16(on Ubuntu)
+name: Works w/PostgreSQL 14(on MacOS)
 
 on:
   push:
@@ -13,13 +13,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-22.04, ubuntu-24.04 ]
-        c_compiler: [ gcc, clang ]
+        os: [ macos-latest ]
         build_type: [ Debug ]
-        pgsql_version: [ 16 ]
+        c_compiler: [ clang ]
+        pgsql_version: [ 14 ]
         include:
-          - c_compiler: gcc
-            cpp_compiler: g++
           - c_compiler: clang
             cpp_compiler: clang++
 
@@ -29,21 +27,11 @@ jobs:
           lfs: false
           submodules: true
 
-      - name: Prepare container(apt download)
+      - name: Prepare container(homebrew)
         shell: bash
         run: |
-          sudo apt update
-          sudo sh -c 'echo "deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main" > /etc/apt/sources.list.d/pgdg.list'
-          curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/postgresql.gpg
-          sudo apt update
-          sudo apt-get install -yqf build-essential libboost-all-dev libgtest-dev postgresql-${{ matrix.pgsql_version }} postgresql-server-dev-${{ matrix.pgsql_version }}
-          echo
-          pg_config
-
-      - name: Prepare container(onnxruntime)
-        shell: bash
-        run: |
-          ./onnxruntime-server/.github/actions/download-onnxruntime-linux.sh
+          brew update
+          HOMEBREW_NO_INSTALLED_DEPENDENTS_CHECK=1 HOMEBREW_NO_AUTO_UPDATE=1 brew install cmake boost googletest onnxruntime postgresql@${{ matrix.pgsql_version }}
 
       - name: Set reusable strings
         # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
@@ -60,7 +48,7 @@ jobs:
           -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
           -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DPG_CONFIG=/usr/lib/postgresql/${{ matrix.pgsql_version }}/bin/pg_config 
+          -DPG_CONFIG=/opt/homebrew/opt/postgresql@${{ matrix.pgsql_version }}/bin/pg_config
           -S ${{ github.workspace }}
 
       - name: Build
