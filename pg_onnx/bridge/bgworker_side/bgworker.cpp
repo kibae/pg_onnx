@@ -32,8 +32,14 @@ int bgworker_init(extension_state_t *state, volatile sig_atomic_t *terminated) {
 		ResetLatch(&MyProc->procLatch);
 
 		/* Wait for a client connection, a signal, or a timeout */
-		auto rc =
-			WaitLatch(&MyProc->procLatch, WL_LATCH_SET | WL_TIMEOUT | WL_POSTMASTER_DEATH, 100L, PG_WAIT_EXTENSION);
+		auto rc = WaitLatch(
+			&MyProc->procLatch, WL_LATCH_SET | WL_TIMEOUT | WL_POSTMASTER_DEATH, 100L,
+#if PG_VERSION_NUM < 140000
+			0
+#else
+			PG_WAIT_EXTENSION
+#endif
+		);
 
 		if (rc & WL_POSTMASTER_DEATH) {
 			elog(LOG, "Got latch event: WL_POSTMASTER_DEATH");

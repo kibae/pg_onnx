@@ -7,6 +7,7 @@
 #include "pg_srf_macro.h"
 #include "session_response_macro.h"
 
+#include <catalog/pg_type.h>
 #include <libpq/libpq-fs.h>
 
 class lo_post_data : public post_data {
@@ -124,7 +125,14 @@ json create_session(extension_state_t *state, const std::string &name, const std
 		off_t offset = 0;
 		while (!model->bin->eof()) {
 			auto bytes_read = model->bin->read(buffer.data(), buffer.size());
-			auto written = FileWrite(tmp_file, buffer.data(), bytes_read, offset, WAIT_EVENT_DATA_FILE_WRITE);
+			auto written = FileWrite(
+				tmp_file, buffer.data(), bytes_read, offset,
+#if PG_VERSION_NUM < 140000
+				0
+#else
+				WAIT_EVENT_DATA_FILE_WRITE
+#endif
+			);
 			if (written <= 0)
 				throw std::runtime_error("failed to write temporary file");
 			offset += written;

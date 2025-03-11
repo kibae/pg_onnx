@@ -33,7 +33,9 @@ extern "C" {
 #include <utils/jsonb.h>
 #include <utils/lsyscache.h>
 #include <utils/snapmgr.h>
+#if PG_VERSION_NUM >= 140000
 #include <utils/wait_event.h>
+#endif
 }
 
 // conflict Float16Impl::abs and Abs in postgres/server/c.h
