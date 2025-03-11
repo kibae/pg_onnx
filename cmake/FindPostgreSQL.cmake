@@ -89,7 +89,7 @@ if (PostgreSQL_FOUND)
     separate_arguments(_pg_ldflags_ex)
 
     set(_server_lib_dirs ${_pg_libdir} ${_pg_pkglibdir})
-    set(_server_inc_dirs ${_pg_pkgincludedir} ${_pg_includedir_server})
+    set(_server_inc_dirs ${_pg_pkgincludedir} ${_pg_includedir_server} ${_pg_includedir_server}/..)
     string(REPLACE ";" " " _shared_link_options
             "${_pg_ldflags};${_pg_ldflags_sl}")
     set(_link_options ${_pg_ldflags})
@@ -253,6 +253,12 @@ $<$<NOT:$<BOOL:${_ext_REQUIRES}>>:#>requires = '$<JOIN:${_ext_REQUIRES},$<COMMA>
 ")
 
     install(TARGETS ${NAME} LIBRARY DESTINATION ${PostgreSQL_PACKAGE_LIBRARY_DIR})
+    if (APPLE)
+        # link .so -> .dylib
+        add_custom_command(TARGET ${NAME} POST_BUILD
+                COMMAND ${CMAKE_COMMAND} -E create_symlink ${NAME}.so ${NAME}.dylib
+                WORKING_DIRECTORY ${PostgreSQL_PACKAGE_LIBRARY_DIR})
+    endif ()
     install(FILES ${_control_file} ${_script_files}
             DESTINATION ${PostgreSQL_EXTENSION_DIR})
 
@@ -273,9 +279,13 @@ $<$<NOT:$<BOOL:${_ext_REQUIRES}>>:#>requires = '$<JOIN:${_ext_REQUIRES},$<COMMA>
             add_test(
                     NAME ${NAME}
                     COMMAND
-                    ${PG_REGRESS} --temp-instance=${CMAKE_BINARY_DIR}/tmp_check
+                    ${PG_REGRESS}
+                    --temp-instance=${CMAKE_BINARY_DIR}/tmp_check
                     --inputdir=${CMAKE_CURRENT_SOURCE_DIR}
-                    --outputdir=${CMAKE_CURRENT_BINARY_DIR} --load-extension=${NAME}
+                    --outputdir=${CMAKE_CURRENT_BINARY_DIR}
+                    --load-extension=${NAME}
+                    --no-locale
+                    --debug
                     ${_ext_REGRESS})
         endif ()
 

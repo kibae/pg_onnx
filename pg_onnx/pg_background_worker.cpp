@@ -44,7 +44,13 @@ void _PG_init(void) {
 	BgwHandleStatus status;
 	auto state = extension_state();
 
-	if (IsBackgroundWorker || state->handle != NULL) {
+	if (
+#if PG_VERSION_NUM >= 130000
+		MyBackendType == B_BG_WORKER
+#else
+		IsBackgroundWorker
+#endif
+		|| state->handle != NULL) {
 		return;
 	}
 
@@ -86,10 +92,14 @@ void _PG_init(void) {
 
 	Assert(status == BGWH_STARTED);
 
-	while (state->port <= 0) {
+	int i = 1000;
+	while (state->port <= 0 && i-- > 0) {
 		elog(LOG, "Waiting for background worker to start");
 		pg_usleep(10000L);
 	}
+
+	if (state->port <= 0)
+		elog(ERROR, "background worker did not start");
 }
 
 void _PG_fini(void) {
