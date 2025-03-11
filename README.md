@@ -1,15 +1,7 @@
 # pg_onnx
 
-[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.20.1&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
+[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.21.0&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
-
-[![Works w/PostgreSQL 13(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml)
-[![Works w/PostgreSQL 14(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml)
-[![Works w/PostgreSQL 15(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml)
-[![Works w/PostgreSQL 16(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml)
-[![Works w/PostgreSQL 17(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml)
-
-[![Works on MacOS](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos.yml)
 
 ----
 
@@ -47,15 +39,12 @@ graph LR
 
 <!-- TOC -->
 
+- [Supported Platforms and PostgreSQL Versions](#supported-platforms-and-postgresql-versions)
 - [Build pg_onnx](#build-pg_onnx)
     - [Requirements](#requirements)
     - [Install ONNX Runtime](#install-onnx-runtime)
     - [Install dependencies](#install-dependencies)
     - [Compile and Install](#compile-and-install)
-- [How to use](#how-to-use)
-    - [Install extension](#install-extension)
-    - [Simple Usage](#simple-usage)
-    - [Using inference results with triggers](#using-inference-results-with-triggers)
 - [Functions](#functions)
     - [ONNX Model Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-model-functions)
         - [pg_onnx_import_model(TEXT, TEXT, BYTEA, JSONB, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_import_modeltext-text-bytea-jsonb-text)
@@ -68,6 +57,22 @@ graph LR
         - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_execute_sessiontext-text-jsonb)
         - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
         - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
+- [How to use](#how-to-use)
+    - [Install extension](#install-extension)
+    - [Simple Usage](#simple-usage)
+    - [Using inference results with triggers](#using-inference-results-with-triggers)
+
+----
+
+# Supported Platforms and PostgreSQL Versions
+
+| Platform      | Ubuntu 22.04, 24.04                                                                                                                                                                                       | MacOS                                                                                                                                                                                                  |
+|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PostgreSQL 13 | [![Works w/PostgreSQL 13(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml) | [![Works w/PostgreSQL 13(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql13.yml) |
+| PostgreSQL 14 | [![Works w/PostgreSQL 14(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml) | [![Works w/PostgreSQL 14(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql14.yml) |
+| PostgreSQL 15 | [![Works w/PostgreSQL 15(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml) | [![Works w/PostgreSQL 15(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql15.yml) |
+| PostgreSQL 16 | [![Works w/PostgreSQL 16(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml) | [![Works w/PostgreSQL 16(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql16.yml) |
+| PostgreSQL 17 | [![Works w/PostgreSQL 17(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml) | [![Works w/PostgreSQL 17(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql17.yml) |
 
 ----
 
@@ -75,7 +80,7 @@ graph LR
 
 ## Requirements
 
-- [PostgreSQL](https://www.postgresql.org/) >= 14
+- [PostgreSQL](https://www.postgresql.org/) >= 13
 - [ONNX Runtime](https://onnxruntime.ai/)
 - [Boost](https://www.boost.org/)
 - [CMake](https://cmake.org/)
@@ -143,6 +148,23 @@ cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
 cmake --build build --target pg_onnx --parallel
 sudo cmake --install build/pg_onnx
 ```
+
+----
+
+# Functions
+
+- Provides several functions for importing ONNX file and executing and managing it.
+- [ONNX Model Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-model-functions)
+    - [pg_onnx_import_model(TEXT, TEXT, BYTEA, JSONB, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_import_modeltext-text-bytea-jsonb-text)
+    - [pg_onnx_drop_model(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_drop_modeltext-text)
+    - [pg_onnx_list_model()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_model)
+    - [pg_onnx_inspect_model_bin(BYTEA)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_inspect_model_binbytea)
+- [ONNX Session Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-session-functions)
+    - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
+    - [pg_onnx_describe_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_describe_sessiontext-text)
+    - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_execute_sessiontext-text-jsonb)
+    - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
+    - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
 
 ----
 
@@ -238,19 +260,3 @@ CREATE TRIGGER trigger_test_insert
     EXECUTE PROCEDURE trigger_test_insert();
 ```
 
-----
-
-# Functions
-
-- Provides several functions for importing ONNX file and executing and managing it.
-- [ONNX Model Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-model-functions)
-    - [pg_onnx_import_model(TEXT, TEXT, BYTEA, JSONB, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_import_modeltext-text-bytea-jsonb-text)
-    - [pg_onnx_drop_model(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_drop_modeltext-text)
-    - [pg_onnx_list_model()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_model)
-    - [pg_onnx_inspect_model_bin(BYTEA)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_inspect_model_binbytea)
-- [ONNX Session Functions](https://github.com/kibae/pg_onnx/wiki/Functions#onnx-session-functions)
-    - [pg_onnx_create_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_create_sessiontext-text)
-    - [pg_onnx_describe_session(TEXT, TEXT)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_describe_sessiontext-text)
-    - [pg_onnx_execute_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_execute_sessiontext-text-jsonb)
-    - [pg_onnx_destroy_session(TEXT, TEXT, JSONB)](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_destroy_sessiontext-text-jsonb)
-    - [pg_onnx_list_session()](https://github.com/kibae/pg_onnx/wiki/Functions#pg_onnx_list_session)
