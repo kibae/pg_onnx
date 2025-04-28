@@ -114,12 +114,9 @@ void _PG_fini(void) {
 }
 
 static void worker_sigterm(SIGNAL_ARGS) {
-	elog(WARNING, "Background worker got SIGTERM");
-	int save_errno = errno;
 	terminated = true;
 	if (MyProc)
 		SetLatch(&MyProc->procLatch);
-	errno = save_errno;
 }
 
 void worker_exit(extension_state_t *state, int code) {

@@ -45,6 +45,12 @@ int bgworker_init(extension_state_t *state, volatile sig_atomic_t *terminated) {
 			elog(LOG, "Got latch event: WL_POSTMASTER_DEATH");
 			*terminated = true;
 		}
+
+		if (*terminated) {
+			elog(WARNING, "Background worker got SIGTERM");
+			int save_errno = errno;
+			errno = save_errno;
+		}
 	}
 
 	server_thread.join();
