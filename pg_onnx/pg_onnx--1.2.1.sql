@@ -19,7 +19,7 @@ CREATE TYPE pg_onnx_inspect AS
     outputs jsonb
 );
 
-CREATE FUNCTION pg_onnx_inspect_model_bin(model bytea)
+CREATE FUNCTION pg_onnx_inspect_model_bin(model bytea, option jsonb DEFAULT '{}'::JSONB)
     RETURNS pg_onnx_inspect
 AS
 'MODULE_PATHNAME',
@@ -48,7 +48,7 @@ DECLARE
     result    BOOLEAN;
     inspect   pg_onnx_inspect;
 BEGIN
-    inspect := pg_onnx_inspect_model_bin($3);
+    inspect := pg_onnx_inspect_model_bin($3, $4);
     model_oid := lo_from_bytea(0, $3);
 
     -- RAISE NOTICE 'model_oid: %', model_oid;

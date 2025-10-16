@@ -12,7 +12,7 @@ PG_FUNCTION_INFO_V1(pg_onnx_internal_destroy_session);
 PG_FUNCTION_INFO_V1(pg_onnx_internal_execute_session);
 
 Datum pg_onnx_inspect_model_bin(PG_FUNCTION_ARGS) {
-	if (PG_NARGS() != 1 || PG_ARGISNULL(0))
+	if (PG_NARGS() < 1 || PG_ARGISNULL(0))
 		ereport(ERROR, (errcode(ERRCODE_INVALID_PARAMETER_VALUE), errmsg("invalid argument")));
 
 	TupleDesc tuple_desc;
@@ -27,11 +27,17 @@ Datum pg_onnx_inspect_model_bin(PG_FUNCTION_ARGS) {
 		);
 
 	try {
-		// args: model BYTEA
+		// args: model BYTEA, option JSONB (optional)
 		auto model_datum = PG_GETARG_DATUM(0);
 		auto model_data = DatumGetByteaPP(model_datum);
+		json option = json::object();
+		if (PG_NARGS() >= 2 && !PG_ARGISNULL(1)) {
+			Jsonb *option_jsonb = PG_GETARG_JSONB_P(1);
+			auto option_cstr = JsonbToCString(nullptr, &option_jsonb->root, VARSIZE_ANY_EXHDR(option_jsonb));
+			option = json::parse(option_cstr);
+		}
 		Orts::onnx::session session(
-			Orts::onnx::session_key("__tmp", "__tmp"), VARDATA_ANY(model_data), VARSIZE_ANY_EXHDR(model_data)
+			Orts::onnx::session_key("__tmp", "__tmp"), VARDATA_ANY(model_data), VARSIZE_ANY_EXHDR(model_data), option
 		);
 		auto session_info = session.to_json();
 
