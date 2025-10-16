@@ -4,7 +4,7 @@
     - [pg_onnx_import_model(TEXT, TEXT, BYTEA, JSONB, TEXT)](#pg_onnx_import_modeltext-text-bytea-jsonb-text)
     - [pg_onnx_drop_model(TEXT, TEXT)](#pg_onnx_drop_modeltext-text)
     - [pg_onnx_list_model()](#pg_onnx_list_model)
-    - [pg_onnx_inspect_model_bin(BYTEA)](#pg_onnx_inspect_model_binbytea)
+    - [pg_onnx_inspect_model_bin(BYTEA, JSONB)](#pg_onnx_inspect_model_bin-bytea-jsonb)
 - [ONNX Session Functions](#onnx-session-functions)
     - [pg_onnx_create_session(TEXT, TEXT)](#pg_onnx_create_sessiontext-text)
     - [pg_onnx_describe_session(TEXT, TEXT)](#pg_onnx_describe_sessiontext-text)
@@ -96,12 +96,14 @@ FROM pg_onnx_list_model();
 
 ----
 
-### pg_onnx_inspect_model_bin(BYTEA)
+### pg_onnx_inspect_model_bin(BYTEA, JSONB)
 
 - Get the type and shape information of the inputs and outputs of the ONNX file.
 - Returns
     - `inputs(JSONB)`: Input type and shape
     - `outputs(JSONB)`: Output type and shape
+- The second argument `option(JSONB)` is optional.
+- If your model relies on custom ops provided by onnxruntime-extensions, you can load the extension library by passing `ortextensions_path` in the options when importing the model. (e.g., ``'{"ortextensions_path": "libortextensions.so"}'::jsonb``)
 
 ```sql
 SELECT *
