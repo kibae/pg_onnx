@@ -258,6 +258,7 @@ CREATE TRIGGER trigger_test_insert
     ON trigger_test
     FOR EACH ROW
     EXECUTE PROCEDURE trigger_test_insert();
+```
 
 ## ORT Extensions Support (onnxruntime-extensions)
 
