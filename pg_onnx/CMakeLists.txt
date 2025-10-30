@@ -52,6 +52,7 @@ add_postgresql_extension(
 
         SCRIPTS pg_onnx--1.2.1.sql
         REGRESS ${REGRESS_FILES}
+        COMMENT "ONNX Runtime integrated with PostgreSQL. Perform ML inference with data in your database."
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register -Wno-register)

@@ -179,7 +179,7 @@ endif ()
 # REGRESS Regress tests.
 function(add_postgresql_extension NAME)
     set(_optional)
-    set(_single VERSION ENCODING)
+    set(_single VERSION ENCODING COMMENT)
     set(_multi SOURCES SCRIPTS SCRIPT_TEMPLATES REQUIRES REGRESS)
     cmake_parse_arguments(_ext "${_optional}" "${_single}" "${_multi}" ${ARGN})
 
