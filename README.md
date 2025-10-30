@@ -273,3 +273,9 @@ SELECT pg_onnx_import_model(
     'e5 tokenizer'
 );
 ```
+
+## Contributors
+
+<a href="https://github.com/kibae/pg_onnx/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=kibae/pg_onnx" />
+</a>
