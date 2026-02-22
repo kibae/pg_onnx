@@ -26,13 +26,16 @@ set(REGRESS_FILES
 )
 
 # CUDA
-find_package(CUDA)
-if (NOT CUDA_FOUND)
-    set(CUDA_SDK_ROOT_DIR "/usr/local/cuda")
-    find_package(CUDA)
+find_package(CUDAToolkit)
+if (NOT CUDAToolkit_FOUND)
+    set(CUDAToolkit_ROOT "/usr/local/cuda")
+    find_package(CUDAToolkit)
 endif ()
 
-if (CUDA_FOUND)
+if (CUDAToolkit_FOUND)
+    if (NOT CMAKE_CUDA_COMPILER)
+        find_program(CMAKE_CUDA_COMPILER nvcc PATHS "${CUDAToolkit_BIN_DIR}" NO_DEFAULT_PATH)
+    endif ()
     set(REGRESS_FILES ${REGRESS_FILES} 08-cuda)
 endif ()
 
@@ -57,5 +60,11 @@ add_postgresql_extension(
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register -Wno-register)
 target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime_server_static)
+
+if (APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            INSTALL_RPATH "${ONNX_RUNTIME_LIBRARY_DIRS}"
+            BUILD_RPATH "${ONNX_RUNTIME_LIBRARY_DIRS}")
+endif ()
 
 enable_testing()

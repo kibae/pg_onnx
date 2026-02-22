@@ -66,13 +66,14 @@ graph LR
 
 # Supported Platforms and PostgreSQL Versions
 
-| Platform      | Ubuntu 22.04, 24.04                                                                                                                                                                                       | MacOS                                                                                                                                                                                                  |
-|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| PostgreSQL 13 | [![Works w/PostgreSQL 13(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql13.yml) | [![Works w/PostgreSQL 13(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql13.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql13.yml) |
-| PostgreSQL 14 | [![Works w/PostgreSQL 14(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql14.yml) | [![Works w/PostgreSQL 14(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql14.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql14.yml) |
-| PostgreSQL 15 | [![Works w/PostgreSQL 15(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql15.yml) | [![Works w/PostgreSQL 15(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql15.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql15.yml) |
-| PostgreSQL 16 | [![Works w/PostgreSQL 16(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql16.yml) | [![Works w/PostgreSQL 16(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql16.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql16.yml) |
-| PostgreSQL 17 | [![Works w/PostgreSQL 17(on Ubuntu)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-ubuntu-pgsql17.yml) | [![Works w/PostgreSQL 17(on MacOS)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql17.yml/badge.svg)](https://github.com/kibae/pg_onnx/actions/workflows/cmake-macos-pgsql17.yml) |
+| Platform      | Ubuntu                                                                                                                                                                  | MacOS                                                                                                                                                                 |
+|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PostgreSQL 13 | ![Ubuntu PG13](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql13.json)           | ![MacOS PG13](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql13.json)           |
+| PostgreSQL 14 | ![Ubuntu PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql14.json)           | ![MacOS PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql14.json)           |
+| PostgreSQL 15 | ![Ubuntu PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql15.json)           | ![MacOS PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql15.json)           |
+| PostgreSQL 16 | ![Ubuntu PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql16.json)           | ![MacOS PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql16.json)           |
+| PostgreSQL 17 | ![Ubuntu PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql17.json)           | ![MacOS PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql17.json)           |
+| PostgreSQL 18 | ![Ubuntu PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql18.json)           | ![MacOS PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql18.json)           |
 
 ----
 
@@ -113,14 +114,17 @@ brew install onnxruntime
 sudo apt install cmake libboost-all-dev libpq-dev postgresql-server-dev-all
 ```
 
-##### (optional) CUDA support (CUDA 12.x, cuDNN 9.x)
+##### (optional) CUDA support (CUDA 12.x/13.x, cuDNN 9.x)
 
 - Follow the instructions below to install the CUDA Toolkit and cuDNN.
     - [CUDA Toolkit Installation Guide](https://docs.nvidia.com/cuda/cuda-installation-guide-linux/index.html)
     - [CUDA Download for Ubuntu](https://developer.nvidia.com/cuda-downloads?target_os=Linux&target_arch=x86_64&Distribution=Ubuntu&target_version=22.04&target_type=deb_network)
 
 ```shell
+# CUDA 12
 sudo apt install cuda-toolkit-12 libcudnn9-dev-cuda-12
+# CUDA 13
+sudo apt install cuda-toolkit-13 libcudnn9-dev-cuda-13
 ```
 
 #### Mac OS
