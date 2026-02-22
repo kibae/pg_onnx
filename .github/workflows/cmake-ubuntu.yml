@@ -1,4 +1,4 @@
-name: Works w/PostgreSQL 16(on Ubuntu)
+name: Build on Ubuntu
 
 on:
   push:
@@ -8,20 +8,13 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-22.04, ubuntu-24.04 ]
-        c_compiler: [ gcc, clang ]
         build_type: [ Debug ]
-        pgsql_version: [ 16 ]
-        include:
-          - c_compiler: gcc
-            cpp_compiler: g++
-          - c_compiler: clang
-            cpp_compiler: clang++
+        pgsql_version: [ 13, 14, 15, 16, 17, 18 ]
 
     steps:
       - uses: actions/checkout@v4
@@ -46,25 +39,21 @@ jobs:
           ./onnxruntime-server/.github/actions/download-onnxruntime-linux.sh
 
       - name: Set reusable strings
-        # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
         id: strings
         shell: bash
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
       - name: Configure CMake
-        # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-        # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
         run: >
           cmake -B ${{ steps.strings.outputs.build-output-dir }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-          -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
+          -DCMAKE_CXX_COMPILER=g++
+          -DCMAKE_C_COMPILER=gcc
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
-          -DPG_CONFIG=/usr/lib/postgresql/${{ matrix.pgsql_version }}/bin/pg_config 
+          -DPG_CONFIG=/usr/lib/postgresql/${{ matrix.pgsql_version }}/bin/pg_config
           -S ${{ github.workspace }}
 
       - name: Build
-        # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
         run: |
           cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }} --parallel 4
           sudo cmake --install ${{ steps.strings.outputs.build-output-dir }}/pg_onnx
@@ -78,15 +67,35 @@ jobs:
 
       - name: Test
         working-directory: ${{ steps.strings.outputs.build-output-dir }}
-        # Execute tests defined by the CMake configuration. Note that --build-config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
-        # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
         run: ctest --extra-verbose --build-config ${{ matrix.build_type }}
 
       - name: Upload artifact
         if: failure()
         uses: actions/upload-artifact@v4
         with:
-          name: output-artifact-${{ matrix.os }}-pgsql${{ matrix.pgsql_version }}
+          name: output-artifact-ubuntu-pgsql${{ matrix.pgsql_version }}
           path: ${{ steps.strings.outputs.build-output-dir }}/pg_onnx/regression.*
           if-no-files-found: ignore
           overwrite: true
+
+      - name: Create Success Badge
+        if: success()
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: a6e5351fdbced3d780f4f153e99de723
+          filename: pg_onnx-ubuntu-pgsql${{ matrix.pgsql_version }}.json
+          label: PostgreSQL ${{ matrix.pgsql_version }}
+          message: passing
+          color: green
+
+      - name: Create Failure Badge
+        if: failure()
+        uses: schneegans/dynamic-badges-action@v1.7.0
+        with:
+          auth: ${{ secrets.GIST_SECRET }}
+          gistID: a6e5351fdbced3d780f4f153e99de723
+          filename: pg_onnx-ubuntu-pgsql${{ matrix.pgsql_version }}.json
+          label: PostgreSQL ${{ matrix.pgsql_version }}
+          message: failing
+          color: red

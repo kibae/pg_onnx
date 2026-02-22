@@ -26,13 +26,16 @@ set(REGRESS_FILES
 )
 
 # CUDA
-find_package(CUDA)
-if (NOT CUDA_FOUND)
-    set(CUDA_SDK_ROOT_DIR "/usr/local/cuda")
-    find_package(CUDA)
+find_package(CUDAToolkit)
+if (NOT CUDAToolkit_FOUND)
+    set(CUDAToolkit_ROOT "/usr/local/cuda")
+    find_package(CUDAToolkit)
 endif ()
 
-if (CUDA_FOUND)
+if (CUDAToolkit_FOUND)
+    if (NOT CMAKE_CUDA_COMPILER)
+        find_program(CMAKE_CUDA_COMPILER nvcc PATHS "${CUDAToolkit_BIN_DIR}" NO_DEFAULT_PATH)
+    endif ()
     set(REGRESS_FILES ${REGRESS_FILES} 08-cuda)
 endif ()
 
