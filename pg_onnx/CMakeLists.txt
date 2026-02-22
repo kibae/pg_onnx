@@ -61,4 +61,10 @@ add_postgresql_extension(
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-deprecated-register -Wno-register)
 target_link_libraries(${PROJECT_NAME} PRIVATE onnxruntime_server_static)
 
+if (APPLE)
+    set_target_properties(${PROJECT_NAME} PROPERTIES
+            INSTALL_RPATH "${ONNX_RUNTIME_LIBRARY_DIRS}"
+            BUILD_RPATH "${ONNX_RUNTIME_LIBRARY_DIRS}")
+endif ()
+
 enable_testing()
