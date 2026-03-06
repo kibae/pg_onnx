@@ -17,7 +17,7 @@ jobs:
       fail-fast: false
       matrix:
         build_type: [ Debug ]
-        pgsql_version: [ 13, 14, 15, 16, 17, 18 ]
+        pgsql_version: [ 14, 15, 16, 17, 18 ]
 
     steps:
       - uses: actions/checkout@v4
