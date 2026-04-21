@@ -1,6 +1,6 @@
 # pg_onnx
 
-[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.24.4&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
+[![ONNX Runtime](https://img.shields.io/github/v/release/microsoft/onnxruntime?filter=v1.25.0&label=ONNX%20Runtime)](https://github.com/microsoft/onnxruntime)
 [![License](https://img.shields.io/github/license/kibae/pg_onnx)](https://github.com/kibae/pg_onnx/blob/main/LICENSE)
 
 ----
@@ -66,14 +66,14 @@ graph LR
 
 # Supported Platforms and PostgreSQL Versions
 
-| Platform      | Ubuntu                                                                                                                                                                  | MacOS                                                                                                                                                                 |
-|---------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| PostgreSQL 13 | ![Ubuntu PG13](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql13.json)           | Not tested (Homebrew no longer provides PG13)                                                                                                                         |
-| PostgreSQL 14 | ![Ubuntu PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql14.json)           | ![MacOS PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql14.json)           |
-| PostgreSQL 15 | ![Ubuntu PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql15.json)           | ![MacOS PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql15.json)           |
-| PostgreSQL 16 | ![Ubuntu PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql16.json)           | ![MacOS PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql16.json)           |
-| PostgreSQL 17 | ![Ubuntu PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql17.json)           | ![MacOS PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql17.json)           |
-| PostgreSQL 18 | ![Ubuntu PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql18.json)           | ![MacOS PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql18.json)           |
+| Platform      | Ubuntu                                                                                                                                                        | MacOS                                                                                                                                                       |
+|---------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| PostgreSQL 13 | ![Ubuntu PG13](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql13.json) | Not tested (Homebrew no longer provides PG13)                                                                                                               |
+| PostgreSQL 14 | ![Ubuntu PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql14.json) | ![MacOS PG14](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql14.json) |
+| PostgreSQL 15 | ![Ubuntu PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql15.json) | ![MacOS PG15](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql15.json) |
+| PostgreSQL 16 | ![Ubuntu PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql16.json) | ![MacOS PG16](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql16.json) |
+| PostgreSQL 17 | ![Ubuntu PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql17.json) | ![MacOS PG17](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql17.json) |
+| PostgreSQL 18 | ![Ubuntu PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-ubuntu-pgsql18.json) | ![MacOS PG18](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/kibae/a6e5351fdbced3d780f4f153e99de723/raw/pg_onnx-macos-pgsql18.json) |
 
 ----
 
@@ -266,16 +266,17 @@ CREATE TRIGGER trigger_test_insert
 
 ## ORT Extensions Support (onnxruntime-extensions)
 
-If your model relies on custom ops provided by onnxruntime-extensions, you can load the extension library by passing `ortextensions_path` in the options when importing the model.
+If your model relies on custom ops provided by onnxruntime-extensions, you can load the extension library by passing
+`ortextensions_path` in the options when importing the model.
 
 ```sql
 SELECT pg_onnx_import_model(
-    'e5-tok',
-    'v1',
-    PG_READ_BINARY_FILE('/PATH/tokenizer.onnx')::bytea,
-    '{"ortextensions_path": "libortextensions.so"}'::jsonb,
-    'e5 tokenizer'
-);
+               'e5-tok',
+               'v1',
+               PG_READ_BINARY_FILE('/PATH/tokenizer.onnx')::bytea,
+               '{"ortextensions_path": "libortextensions.so"}'::jsonb,
+               'e5 tokenizer'
+       );
 ```
 
 ## Contributors
