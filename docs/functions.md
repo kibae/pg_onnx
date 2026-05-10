@@ -19,12 +19,12 @@
 ### pg_onnx_import_model(TEXT, TEXT, BYTEA, JSONB, TEXT)
 
 - Import the ONNX file.
-- If you want to enable the use of CUDA, use `{"cuda": true}` or `{"cuda": {"device_id": 0}}` to specify the device ID.
+- The `option(JSONB)` is stored on the model and forwarded verbatim to the bundled `onnxruntime-server` when the session is created. See [Model Options](#model-options) below for available keys.
 - Parameters
     - `name(TEXT)`: Model name
     - `version(TEXT)`: Model version
     - `model(BYTEA)`: ONNX model binary data
-    - `option(JSONB)`: Options
+    - `option(JSONB)`: Options. See [Model Options](#model-options).
     - `description(TEXT)`: Model description
 - Returns
     - boolean: `true` if the model is successfully imported, `false` otherwise.
@@ -44,6 +44,97 @@ SELECT pg_onnx_import_model(
 ----------------------
  t
 (1 row)
+```
+
+#### Model Options
+
+The `option` JSONB is forwarded to `onnxruntime-server` and consumed when the per-model ONNX runtime session is created. The keys below are passed through transparently. See the upstream [onnxruntime-server #116](https://github.com/kibae/onnxruntime-server/pull/116) for the complete grammar.
+
+> Only values that ORT actually applies are echoed back via [`pg_onnx_describe_session`](#pg_onnx_describe_sessiontext-text) and [`pg_onnx_list_session`](#pg_onnx_list_session). Keys rejected by ORT silently drop out of the echo.
+
+##### `cuda` — CUDA execution provider
+
+Backward-compatible shortcut forms keep working:
+
+- `"cuda": true` — enable CUDA on `device_id: 0`
+- `"cuda": false` — disable CUDA (default)
+- `"cuda": <integer>` — enable CUDA on the given device ID
+- `"cuda": { ... }` — object form with CUDA EP V2 keys, including:
+    - `device_id` (int)
+    - `gpu_mem_limit` (int, bytes)
+    - `arena_extend_strategy` (`"kNextPowerOfTwo"` | `"kSameAsRequested"`)
+    - `cudnn_conv_algo_search` (`"EXHAUSTIVE"` | `"HEURISTIC"` | `"DEFAULT"`)
+    - `cudnn_conv_use_max_workspace` (bool)
+    - `do_copy_in_default_stream` (bool)
+    - `enable_cuda_graph` (bool)
+
+```json
+{
+  "cuda": {
+    "device_id": 0,
+    "gpu_mem_limit": 2147483648,
+    "arena_extend_strategy": "kSameAsRequested"
+  }
+}
+```
+
+##### `extensions` — onnxruntime-extensions custom ops
+
+Load custom-op libraries from [onnxruntime-extensions](https://github.com/microsoft/onnxruntime-extensions). The value is an array of absolute paths; libraries are registered in array order.
+
+```json
+{
+  "extensions": ["/usr/local/lib/libortextensions.so"]
+}
+```
+
+The legacy single-path form `"ortextensions_path": "<path>"` is still accepted and is normalized into the `extensions` array on input and on echo.
+
+##### `session_options` — ORT `SessionOptions`
+
+Configure the underlying ORT [`SessionOptions`](https://onnxruntime.ai/docs/api/c/struct_ort_api.html). Supported keys:
+
+- `intra_op_num_threads` (int)
+- `inter_op_num_threads` (int)
+- `execution_mode` (`"ORT_SEQUENTIAL"` | `"ORT_PARALLEL"`)
+- `graph_optimization_level` (`"ORT_DISABLE_ALL"` | `"ORT_ENABLE_BASIC"` | `"ORT_ENABLE_EXTENDED"` | `"ORT_ENABLE_ALL"`)
+- `enable_cpu_mem_arena` (bool)
+- `enable_mem_pattern` (bool)
+- `log_severity_level` (int)
+- `logid` (string)
+- `enable_profiling` (bool, or string prefix)
+- `optimized_model_filepath` (string)
+- `free_dimension_overrides` (object: `{name: int}`)
+- `config_entries` (object: `{key: string-value}`)
+
+```json
+{
+  "session_options": {
+    "intra_op_num_threads": 4,
+    "graph_optimization_level": "ORT_ENABLE_ALL",
+    "enable_mem_pattern": true,
+    "config_entries": { "session.use_env_allocators": "1" }
+  }
+}
+```
+
+##### Combined example
+
+```sql
+SELECT pg_onnx_import_model(
+        'sample_model',
+        'v20230101',
+        PG_READ_BINARY_FILE('/your_model_path/model.onnx')::bytea,
+        '{
+          "cuda": { "device_id": 0, "gpu_mem_limit": 2147483648 },
+          "extensions": ["/usr/local/lib/libortextensions.so"],
+          "session_options": {
+            "intra_op_num_threads": 4,
+            "graph_optimization_level": "ORT_ENABLE_ALL"
+          }
+        }'::jsonb,
+        'sample model'
+    );
 ```
 
 ----
@@ -102,8 +193,16 @@ FROM pg_onnx_list_model();
 - Returns
     - `inputs(JSONB)`: Input type and shape
     - `outputs(JSONB)`: Output type and shape
-- The second argument `option(JSONB)` is optional.
-- If your model relies on custom ops provided by onnxruntime-extensions, you can load the extension library by passing `ortextensions_path` in the options when importing the model. (e.g., ``'{"ortextensions_path": "libortextensions.so"}'::jsonb``)
+- The second argument `option(JSONB)` is optional and accepts the same keys as [Model Options](#model-options). The most common ones for inspection are `extensions` (load `onnxruntime-extensions` custom-op libraries before parsing the model) and `session_options.config_entries`.
+
+```sql
+-- inspect a model that uses custom ops from onnxruntime-extensions
+SELECT *
+FROM pg_onnx_inspect_model_bin(
+        PG_READ_BINARY_FILE('/your_model_path/model.onnx')::bytea,
+        '{"extensions": ["/usr/local/lib/libortextensions.so"]}'::jsonb
+    );
+```
 
 ```sql
 SELECT *
