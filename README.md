@@ -266,18 +266,22 @@ CREATE TRIGGER trigger_test_insert
 
 ## ORT Extensions Support (onnxruntime-extensions)
 
-If your model relies on custom ops provided by onnxruntime-extensions, you can load the extension library by passing
-`ortextensions_path` in the options when importing the model.
+If your model relies on custom ops provided by onnxruntime-extensions, load the extension libraries by passing the
+`extensions` array in the options when importing the model. Libraries are registered in array order.
 
 ```sql
 SELECT pg_onnx_import_model(
                'e5-tok',
                'v1',
                PG_READ_BINARY_FILE('/PATH/tokenizer.onnx')::bytea,
-               '{"ortextensions_path": "libortextensions.so"}'::jsonb,
+               '{"extensions": ["libortextensions.so"]}'::jsonb,
                'e5 tokenizer'
        );
 ```
+
+The legacy single-path form `'{"ortextensions_path": "libortextensions.so"}'::jsonb` is still accepted and is normalized
+into the `extensions` array on input and on echo. See [docs/functions.md → Model Options](docs/functions.md#model-options)
+for the full set of supported keys (`cuda`, `extensions`, `session_options`).
 
 ## Contributors
 
