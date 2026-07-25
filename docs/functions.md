@@ -96,22 +96,24 @@ Configure the underlying ORT [`SessionOptions`](https://onnxruntime.ai/docs/api/
 
 - `intra_op_num_threads` (int)
 - `inter_op_num_threads` (int)
-- `execution_mode` (`"ORT_SEQUENTIAL"` | `"ORT_PARALLEL"`)
-- `graph_optimization_level` (`"ORT_DISABLE_ALL"` | `"ORT_ENABLE_BASIC"` | `"ORT_ENABLE_EXTENDED"` | `"ORT_ENABLE_ALL"`)
+- `execution_mode` (`"sequential"` | `"parallel"`)
+- `graph_optimization_level` (`"disable"` | `"basic"` | `"extended"` | `"layout"` | `"all"`) — `"disabled"` and `"off"` are accepted aliases of `"disable"`. `"layout"` requires onnxruntime-server 1.28.0 or newer.
 - `enable_cpu_mem_arena` (bool)
 - `enable_mem_pattern` (bool)
 - `log_severity_level` (int)
 - `logid` (string)
-- `enable_profiling` (bool, or string prefix)
+- `enable_profiling` (bool) — pair with `profile_file_prefix` (string) to set the profile file prefix
 - `optimized_model_filepath` (string)
 - `free_dimension_overrides` (object: `{name: int}`)
 - `config_entries` (object: `{key: string-value}`)
+
+Enum values are matched case-sensitively against the lowercase names above. A value that does not match — including the C API's `ORT_*` constant names — is dropped silently: the session is still created, but the option is not applied and does not appear in the options echoed back by `pg_onnx_list_session()`.
 
 ```json
 {
   "session_options": {
     "intra_op_num_threads": 4,
-    "graph_optimization_level": "ORT_ENABLE_ALL",
+    "graph_optimization_level": "all",
     "enable_mem_pattern": true,
     "config_entries": { "session.use_env_allocators": "1" }
   }
@@ -130,7 +132,7 @@ SELECT pg_onnx_import_model(
           "extensions": ["/usr/local/lib/libortextensions.so"],
           "session_options": {
             "intra_op_num_threads": 4,
-            "graph_optimization_level": "ORT_ENABLE_ALL"
+            "graph_optimization_level": "all"
           }
         }'::jsonb,
         'sample model'
