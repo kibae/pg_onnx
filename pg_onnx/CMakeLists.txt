@@ -21,6 +21,7 @@ set(SOURCE_FILES
 set(REGRESS_FILES
         01-create-model
         04-session
+        06-scalar
         05-trigger
         09-drop-model
 )

@@ -94,9 +94,9 @@ graph LR
 #### Linux
 
 - Use `download-onnxruntime-linux.sh` script
-    - This script downloads the latest version of the binary and install to `/usr/local/onnxruntime`.
+    - This script downloads the pinned runtime version and installs to `/usr/local/onnxruntime`.
     - Also, add `/usr/local/onnxruntime/lib` to `/etc/ld.so.conf.d/onnxruntime.conf` and run `ldconfig`.
-- Or manually download binary from [ONNX Runtime Releases](https://github.com/microsoft/onnxruntime/releases).
+- For ONNX Runtime 1.32.0, the Linux and macOS scripts use Microsoft's checksum-pinned NuGet package because the GitHub release assets are unavailable. The runtime version remains 1.32.0; this is a distribution fallback, not a runtime security patch.
 
 #### Mac OS
 
